@@ -14,6 +14,9 @@ import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
  */
 public class GuiSA extends GuiScreen
 {
+	private final int maxDelay = 5;
+	private int clickDelay = maxDelay;
+
 	public static final int GUI_ID = 20;
 
 	private AchievementHandler achievements;
@@ -34,11 +37,14 @@ public class GuiSA extends GuiScreen
 	{
 		super.initGui();
 
+		clickDelay = 5;
 		buttonList.clear();
 
 		SimpleAchievement[] chievs = achievements.getAchievementArr();
 
-		int achOffset = page * 7;
+		int HARDCODED_ENTRIES_PER_PAGE_FIX_THIS = 8;
+		
+		int achOffset = page * HARDCODED_ENTRIES_PER_PAGE_FIX_THIS;
 
 		for (int i = achOffset; i < chievs.length; i++)
 		{
@@ -56,6 +62,8 @@ public class GuiSA extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float par3)
 	{
+		clickDelay = Math.max(0, clickDelay - 1);
+		
 		drawRect(5, 5, this.width - 5, this.height - 5, 0xFA2E2E2E);
 
 		super.drawScreen(mouseX, mouseY, par3);
@@ -68,7 +76,7 @@ public class GuiSA extends GuiScreen
 		{
 			achievements.toggleAchievement(button.id);
 		}
-		else
+		else if (clickDelay == 0)
 		{
 			if (button.id == achievements.numAchievements())
 			{
