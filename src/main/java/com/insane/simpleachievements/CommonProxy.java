@@ -1,6 +1,5 @@
 package com.insane.simpleachievements;
 
-import com.insane.simpleachievements.gui.Gui;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -18,8 +17,8 @@ public class CommonProxy implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (ID == Gui.GUI_ID) {
-            return new Gui();
+        if (ID == GuiSA.GUI_ID) {
+            return new GuiSA(player);
         }
         return null;
     }

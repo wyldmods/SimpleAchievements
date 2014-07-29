@@ -85,4 +85,13 @@ public class SimpleAchievements {
             }
         }
     }
+
+    public static int toHex(int r, int g, int b)
+    {
+        int hex = 0;
+        hex = hex | ((r) << 16);
+        hex = hex | ((g) << 8);
+        hex = hex | ((b));
+        return hex;
+    }
 }

@@ -57,4 +57,8 @@ public class AchievementHandler {
         return listOfAchievements;
     }
 
+    public int getNumberOfAchievements() {
+        return this.listOfAchievements.size();
+    }
+
 }

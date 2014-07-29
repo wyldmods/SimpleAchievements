@@ -1,6 +1,6 @@
 package com.insane.simpleachievements;
 
-import com.insane.simpleachievements.gui.Gui;
+import com.insane.simpleachievements.GuiSA;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ public class BlockAchievementBlock extends Block {
 
     @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer player, int par6, float par7, float par8, float par9) {
-        player.openGui(SimpleAchievements.instance, Gui.GUI_ID, par1World, par2, par3, par4);
+        player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, par1World, par2, par3, par4);
         return true;
     }
 }
