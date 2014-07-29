@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
+import com.insane.simpleachievements.BlockAchievementBlock.TileEntityAchievementStand;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -40,7 +41,7 @@ public class SimpleAchievements
 
 	public static File achievementConfig;
 
-	public static Block achievementBlock;
+	public static Block achievementStand;
 
 	public static List<SimpleAchievement> defaults;
 
@@ -60,9 +61,13 @@ public class SimpleAchievements
 	{
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
 
-		achievementBlock = new BlockAchievementBlock(500);
+		achievementStand = new BlockAchievementBlock(500);
+		GameRegistry.registerBlock(achievementStand, "sa.achievementStand");
+		GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
+		
+		proxy.registerRenderers();
 
-		GameRegistry.registerBlock(achievementBlock, MODID + "achievementBlock");
+		GameRegistry.registerBlock(achievementStand, MODID + "achievementBlock");
 	}
 
 	public static List<SimpleAchievement> readInAchievements()
