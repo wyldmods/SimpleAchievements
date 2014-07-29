@@ -15,7 +15,7 @@ import java.io.IOException;
 public class PacketHandlerSA implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-        if (packet.channel.equals("ChannelSA")) {
+        if (packet.channel.equals(SimpleAchievements.CHANNEL)) {
             DataInputStream dis = new DataInputStream(new ByteArrayInputStream(packet.data));
 
             try {
@@ -25,6 +25,5 @@ public class PacketHandlerSA implements IPacketHandler {
                 e.printStackTrace();
             }
         }
-
     }
 }

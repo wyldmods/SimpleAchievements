@@ -24,17 +24,17 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0")
-@NetworkMod(clientSideRequired = true, channels={"SAStructure"}, packetHandler = PacketHandlerSA.class)
+@NetworkMod(clientSideRequired = true, channels = SimpleAchievements.CHANNEL , packetHandler = PacketHandlerSA.class)
 public class SimpleAchievements
 {
-
 	public static ArrayList<String> achievements = null;
 
 	public static final String MODID = "SimpleAchievements";
+	public static final String CHANNEL = "SmplAchv";
 
 	@Mod.Instance("SimpleAchievements")
 	public static SimpleAchievements instance;
-	
+
 	@SidedProxy(clientSide = "com.insane.simpleachievements.client.ClientProxy", serverSide = "com.insane.simpleachievements.CommonProxy")
 	public static CommonProxy proxy;
 
@@ -47,8 +47,7 @@ public class SimpleAchievements
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-
-		// GameRegistry.registerPlayerTracker(new PlayerTracker());
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		MinecraftForge.EVENT_BUS.register(AchievementManager.instance());
 
 		achievementConfig = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID + "/achievementList.txt");

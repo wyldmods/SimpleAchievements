@@ -141,7 +141,7 @@ public class AchievementManager
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
         DataOutputStream outputStream = new DataOutputStream(bos);
         try {
-            AchievementHandler chievs = map.get(player.getDisplayName());
+            AchievementHandler chievs = map.get(player.username);
             for (int i = 0; i < chievs.numAchievements(); i++) {
                 outputStream.writeUTF(chievs.getAchievementText(i));
                 outputStream.writeBoolean(chievs.getAchievementState(i));
@@ -151,9 +151,9 @@ public class AchievementManager
         }
 
         Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "SAStructure";
+        packet.channel = SimpleAchievements.CHANNEL;
         packet.data = bos.toByteArray();
-        packet.length = bos.size();
+        packet.length = packet.data.length;
 
         PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
     }

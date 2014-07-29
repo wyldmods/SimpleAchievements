@@ -9,16 +9,14 @@ import cpw.mods.fml.common.IPlayerTracker;
 /**
  * Created by Michael on 28/07/2014.
  */
-@Deprecated
 public class PlayerTracker implements IPlayerTracker
 {
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-	    if (player!=null && player.worldObj.isRemote) {
+	    if (player!=null && !player.worldObj.isRemote) {
             //Get packet from server
             AchievementManager.instance().sendStructureToPlayer(player);
-
         }
 	}
 
