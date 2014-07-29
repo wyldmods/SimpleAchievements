@@ -1,13 +1,14 @@
 package com.insane.simpleachievements;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
@@ -135,4 +136,25 @@ public class AchievementManager
 			System.out.println("Could not save achievements file!");
 		}
 	}
+
+    public void sendStructureToPlayer(EntityPlayer player) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+        DataOutputStream outputStream = new DataOutputStream(bos);
+        try {
+            AchievementHandler chievs = map.get(player.getDisplayName());
+            for (int i = 0; i < chievs.numAchievements(); i++) {
+                outputStream.writeUTF(chievs.getAchievementText(i));
+                outputStream.writeBoolean(chievs.getAchievementState(i));
+            }
+        } catch (IOException error) {
+            error.printStackTrace();
+        }
+
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "SAStructure";
+        packet.data = bos.toByteArray();
+        packet.length = bos.size();
+
+        PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
+    }
 }
