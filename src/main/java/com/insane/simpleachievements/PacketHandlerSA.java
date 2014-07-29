@@ -19,15 +19,19 @@ public class PacketHandlerSA implements IPacketHandler {
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
         if (packet.channel.equals(SimpleAchievements.CHANNEL)) {
             DataInputStream dis = new DataInputStream(new ByteArrayInputStream(packet.data));
-            AchievementHandler replace = disToAchievement(dis, (EntityPlayer)player);
+            AchievementHandler replace = disToAchievement(dis, (EntityPlayer)player, packet.length);
             AchievementManager.instance().changeMap((EntityPlayer) player, replace);
         }
     }
 
-    private AchievementHandler disToAchievement(DataInputStream dis, EntityPlayer player) {
+    private AchievementHandler disToAchievement(DataInputStream dis, EntityPlayer player, int length) {
         ArrayList<AchievementHandler.SimpleAchievement> newAchievements = new ArrayList<AchievementHandler.SimpleAchievement>();
         try {
-            newAchievements.add(new AchievementHandler.SimpleAchievement(dis.readUTF(),dis.readBoolean()));
+            int counter=0;
+            while (counter < length) {
+                newAchievements.add(new AchievementHandler.SimpleAchievement(dis.readUTF(), dis.readBoolean()));
+                counter++;
+            }
         } catch (IOException error) {
             System.out.print("Issue with packet");
             error.printStackTrace();

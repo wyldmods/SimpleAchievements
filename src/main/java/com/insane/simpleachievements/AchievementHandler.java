@@ -78,9 +78,14 @@ public class AchievementHandler
 		return achievements[id].getState();
 	}
 
-	public List<SimpleAchievement> getAllAchievements()
+	public List<SimpleAchievement> getAchievementList()
 	{
 		return Arrays.asList(achievements);
+	}
+	
+	public SimpleAchievement[] getAchievementArr()
+	{
+		return Arrays.copyOf(achievements, achievements.length);
 	}
 
 	public int numAchievements()
