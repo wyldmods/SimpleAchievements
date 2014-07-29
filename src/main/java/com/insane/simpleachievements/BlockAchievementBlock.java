@@ -1,11 +1,11 @@
 package com.insane.simpleachievements;
 
-import com.insane.simpleachievements.GuiSA;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import com.insane.simpleachievements.client.gui.GuiSA;
 
 /**
  * Created by Michael on 29/07/2014.

@@ -1,64 +1,91 @@
 package com.insane.simpleachievements;
 
-import net.minecraft.nbt.NBTTagCompound;
+import java.util.Arrays;
+import java.util.List;
 
-import java.util.ArrayList;
+public class AchievementHandler
+{
+	public static class SimpleAchievement
+	{
+		public final String text;
+		private boolean state;
+		
+		public SimpleAchievement(String text, boolean state)
+		{
+			this.text = text;
+			this.state = state;
+		}
+		
+		public SimpleAchievement(String text)
+		{
+			this(text, false);
+		}
 
-/**
- * Created by Michael on 28/07/2014.
- */
-public class AchievementHandler {
+		public boolean getState()
+		{
+			return state;
+		}
+		
+		public void setState(boolean newState)
+		{
+			state = newState;
+		}
 
-    private NBTTagCompound achievements;
-    private ArrayList<String> listOfAchievements = new ArrayList<String>();
+		public void toggle()
+		{
+			state = !state;
+		}
+	}
+	
+	private final SimpleAchievement[] achievements;
 
-    public AchievementHandler() {
-        achievements = new NBTTagCompound();
+	public AchievementHandler(String username, List<SimpleAchievement> listOfAchievements)
+	{		
+		achievements = new SimpleAchievement[listOfAchievements.size()];
+		for (int i = 0; i < listOfAchievements.size(); i++)
+		{
+			achievements[i] = listOfAchievements.get(i);
+		}
+	}
+	
+	public AchievementHandler(String username)
+	{		
+		this(username, SimpleAchievements.defaults);
+	}
 
-        listOfAchievements = SimpleAchievements.readInAchievements();
-        for (int i=0; i<listOfAchievements.size(); i++) {
-            achievements.setBoolean(listOfAchievements.get(i),false);
-        }
-    }
+	public void toggleAchievement(SimpleAchievement ach)
+	{
+		ach.toggle();
+	}
+	
+	public void toggleAchievement(int id)
+	{
+		toggleAchievement(achievements[id]);
+	}
 
+	public SimpleAchievement getAchievement(int id)
+	{
+		return achievements[id];
+	}
+	
+	public String getAchievementText(int id)
+	{
+		return achievements[id].text;
+	}
+	
+	public boolean getAchievementState(int id)
+	{
+		return achievements[id].getState();
+	}
 
-    public boolean addAchievement(String text) {
-        if (achievements.hasKey(text)) {
-            return false;
-        } else {
-            achievements.setBoolean(text,false);
-            return true;
-        }
-    }
+	public List<SimpleAchievement> getAllAchievements()
+	{
+		return Arrays.asList(achievements);
+	}
 
-    public boolean removeAchievement(String text) {
-        if (achievements.hasKey(text)) {
-            achievements.removeTag(text);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean toggleAchievement(String text) {
-        if (achievements.hasKey(text)) {
-            achievements.setBoolean(text,!achievements.getBoolean(text));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public NBTTagCompound getAchievements() {
-        return this.achievements;
-    }
-
-    public ArrayList<String> getListOfAchievements() {
-        return listOfAchievements;
-    }
-
-    public int getNumberOfAchievements() {
-        return this.listOfAchievements.size();
-    }
+	public int numAchievements()
+	{
+		return achievements.length;
+	}
 
 }
