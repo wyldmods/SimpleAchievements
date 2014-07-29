@@ -137,6 +137,11 @@ public class AchievementManager
 		}
 	}
 
+    protected void changeMap(EntityPlayer player, AchievementHandler handler) {
+        map.put(player.username, handler);
+    }
+
+
     public void sendStructureToPlayer(EntityPlayer player) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
         DataOutputStream outputStream = new DataOutputStream(bos);
