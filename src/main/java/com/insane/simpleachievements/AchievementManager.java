@@ -93,7 +93,7 @@ public class AchievementManager
 		return map.get(username);
 	}
 
-	private void checkMap(String username)
+	void checkMap(String username)
 	{
 		if (!map.containsKey(username))
 		{
@@ -147,6 +147,9 @@ public class AchievementManager
         DataOutputStream outputStream = new DataOutputStream(bos);
         try {
             AchievementHandler chievs = map.get(player.username);
+            if (chievs == null) {
+            	return;
+            }
             for (int i = 0; i < chievs.numAchievements(); i++) {
                 outputStream.writeUTF(chievs.getAchievementText(i));
                 outputStream.writeBoolean(chievs.getAchievementState(i));

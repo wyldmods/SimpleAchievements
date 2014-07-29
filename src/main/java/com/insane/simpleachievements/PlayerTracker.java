@@ -1,9 +1,6 @@
 package com.insane.simpleachievements;
 
-import java.util.ArrayList;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.IPlayerTracker;
 
 /**
@@ -15,7 +12,7 @@ public class PlayerTracker implements IPlayerTracker
 	public void onPlayerLogin(EntityPlayer player)
 	{
 	    if (player!=null && !player.worldObj.isRemote) {
-            //Get packet from server
+            AchievementManager.instance().checkMap(player.username);
             AchievementManager.instance().sendStructureToPlayer(player);
         }
 	}
