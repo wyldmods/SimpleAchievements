@@ -6,9 +6,12 @@ package com.insane.simpleachievements;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +33,25 @@ public class SimpleAchievements {
 
     public static File achievementList;
 
+    public static Block achievementBlock;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         GameRegistry.registerPlayerTracker(new PlayerTracker());
 
         achievementList = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath()+"/"+MODID+"/achievementList.txt");
         create(achievementList);
+
+
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        NetworkRegistry.instance().registerGuiHandler(instance, proxy);
+
+        achievementBlock = new BlockAchievementBlock(500);
+
+        GameRegistry.registerBlock(achievementBlock,MODID+"achievementBlock");
     }
 
     public static ArrayList<String> readInAchievements() {
