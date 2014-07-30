@@ -22,6 +22,7 @@ public class GuiSA extends GuiScreen
 	private AchievementHandler achievements;
 
 	private int page;
+    private int AMOUNT_OF_ENTRIES;
 
 	public GuiSA(EntityPlayer player)
 	{
@@ -44,7 +45,7 @@ public class GuiSA extends GuiScreen
 
 		int HARDCODED_ENTRIES_PER_PAGE_FIX_THIS = 8;
 		
-		int achOffset = page * HARDCODED_ENTRIES_PER_PAGE_FIX_THIS;
+		int achOffset = page * AMOUNT_OF_ENTRIES;
 
 		for (int i = achOffset; i < chievs.length; i++)
 		{
@@ -91,9 +92,28 @@ public class GuiSA extends GuiScreen
 		}
 	}
 
+    @Override
+    public void setWorldAndResolution(Minecraft par1Minecraft, int par2, int par3) {
+
+        this.mc = par1Minecraft;
+        this.fontRenderer = par1Minecraft.fontRenderer;
+        this.width = par2;
+        this.height = par3;
+        this.buttonList.clear();
+        this.AMOUNT_OF_ENTRIES = calculateNumberOfEntries(par2,par3);
+        this.initGui();
+    }
+
 	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
 	}
+
+    private int calculateNumberOfEntries(int width, int height) {
+        int padding = 10;
+
+        int result = ((height-30)-padding)/25;
+        return result;
+    }
 }
