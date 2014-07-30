@@ -1,14 +1,14 @@
 package com.insane.simpleachievements;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
@@ -16,8 +16,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.insane.simpleachievements.AchievementHandler;
-import com.insane.simpleachievements.SimpleAchievements;
 
 public class AchievementManager
 {
@@ -97,7 +95,7 @@ public class AchievementManager
 	{
 		if (!map.containsKey(username))
 		{
-			map.put(username, new AchievementHandler(username));
+			map.put(username, new AchievementHandler());
 		}
 	}
 
@@ -137,32 +135,7 @@ public class AchievementManager
 		}
 	}
 
-    protected void changeMap(EntityPlayer player, AchievementHandler handler) {
+    public void changeMap(EntityPlayer player, AchievementHandler handler) {
         map.put(player.username, handler);
-    }
-
-
-    public void sendStructureToPlayer(EntityPlayer player) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-        DataOutputStream outputStream = new DataOutputStream(bos);
-        try {
-            AchievementHandler chievs = map.get(player.username);
-            if (chievs == null) {
-            	return;
-            }
-            for (int i = 0; i < chievs.numAchievements(); i++) {
-                outputStream.writeUTF(chievs.getAchievementText(i));
-                outputStream.writeBoolean(chievs.getAchievementState(i));
-            }
-        } catch (IOException error) {
-            error.printStackTrace();
-        }
-
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = SimpleAchievements.CHANNEL;
-        packet.data = bos.toByteArray();
-        packet.length = packet.data.length;
-
-        PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
     }
 }

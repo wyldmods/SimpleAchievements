@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
 import com.insane.simpleachievements.BlockAchievementBlock.TileEntityAchievementStand;
+import com.insane.simpleachievements.networking.PacketHandlerSA;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -25,13 +26,12 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0")
-@NetworkMod(clientSideRequired = true, channels = SimpleAchievements.CHANNEL , packetHandler = PacketHandlerSA.class)
+@NetworkMod(clientSideRequired = true, channels = PacketHandlerSA.CHANNEL , packetHandler = PacketHandlerSA.class)
 public class SimpleAchievements
 {
 	public static ArrayList<String> achievements = null;
 
 	public static final String MODID = "SimpleAchievements";
-	public static final String CHANNEL = "SmplAchv";
 
 	@Mod.Instance("SimpleAchievements")
 	public static SimpleAchievements instance;
@@ -48,6 +48,8 @@ public class SimpleAchievements
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		PacketHandlerSA.registerSerializeable(AchievementHandler.class);
+		
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		MinecraftForge.EVENT_BUS.register(AchievementManager.instance());
 

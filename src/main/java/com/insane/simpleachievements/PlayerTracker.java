@@ -1,7 +1,10 @@
 package com.insane.simpleachievements;
 
+import com.insane.simpleachievements.networking.PacketHandlerSA;
+
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.network.Player;
 
 /**
  * Created by Michael on 28/07/2014.
@@ -13,7 +16,7 @@ public class PlayerTracker implements IPlayerTracker
 	{
 	    if (player!=null && !player.worldObj.isRemote) {
             AchievementManager.instance().checkMap(player.username);
-            AchievementManager.instance().sendStructureToPlayer(player);
+            PacketHandlerSA.sendToClient((Player) player, AchievementManager.instance().getAchievementsFor(player.username));
         }
 	}
 

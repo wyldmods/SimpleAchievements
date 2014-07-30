@@ -22,7 +22,7 @@ public class GuiSA extends GuiScreen
 	private AchievementHandler achievements;
 
 	private int page;
-    private int AMOUNT_OF_ENTRIES;
+    private int entryCount;
 
 	public GuiSA(EntityPlayer player)
 	{
@@ -42,10 +42,8 @@ public class GuiSA extends GuiScreen
 		buttonList.clear();
 
 		SimpleAchievement[] chievs = achievements.getAchievementArr();
-
-		int HARDCODED_ENTRIES_PER_PAGE_FIX_THIS = 8;
 		
-		int achOffset = page * AMOUNT_OF_ENTRIES;
+		int achOffset = page * entryCount;
 
 		for (int i = achOffset; i < chievs.length; i++)
 		{
@@ -100,7 +98,7 @@ public class GuiSA extends GuiScreen
         this.width = par2;
         this.height = par3;
         this.buttonList.clear();
-        this.AMOUNT_OF_ENTRIES = calculateNumberOfEntries(par2,par3);
+        this.entryCount = calculateNumberOfEntries(par2,par3);
         this.initGui();
     }
 
