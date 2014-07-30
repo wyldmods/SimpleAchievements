@@ -1,13 +1,19 @@
 package com.insane.simpleachievements.client.gui;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 import com.insane.simpleachievements.AchievementHandler;
-import com.insane.simpleachievements.AchievementManager;
 import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
+import com.insane.simpleachievements.AchievementManager;
+import com.insane.simpleachievements.SimpleAchievements;
 
 /**
  * Created by Michael on 29/07/2014.
@@ -23,6 +29,17 @@ public class GuiSA extends GuiScreen
 
 	private int page;
     private int entryCount;
+    
+    private int bookWidth = 417;
+    private int bookHeight = 245;
+    
+    private int startX;
+    private int startY = 2;
+    
+    private int startYAch = 15;
+    
+    private static ResourceLocation bgl = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_left.png");
+    private static ResourceLocation bgr = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_right.png");
 
 	public GuiSA(EntityPlayer player)
 	{
@@ -43,14 +60,27 @@ public class GuiSA extends GuiScreen
 
 		SimpleAchievement[] chievs = achievements.getAchievementArr();
 		
-		int achOffset = page * entryCount;
+		int achOffset = page * entryCount * 2;
 
+		int height = 30;
+		
+		//page 1
 		for (int i = achOffset; i < chievs.length; i++)
 		{
-			int yPos = 10 + ((i - achOffset) * 25);
-			if (yPos < height - 30)
+			int yPos = startYAch + ((i - achOffset) * height);
+			if (yPos < bookHeight - height)
 			{
-				buttonList.add(new ButtonCheckBox(i, 20, yPos, chievs[i], this));
+				buttonList.add(new ButtonCheckBox(i, startX + 25, startY + yPos, bookWidth / 2 - 45, height, chievs[i], this));
+			}
+		}
+		
+		// page 2
+		for (int i = achOffset + entryCount; i < chievs.length; i++)
+		{
+			int yPos = startYAch + ((i - achOffset - entryCount) * height);
+			if (yPos < bookHeight - height)
+			{
+				buttonList.add(new ButtonCheckBox(i, startX + 15 + (bookWidth / 2), startY + yPos, bookWidth / 2 - 45, height, chievs[i], this));
 			}
 		}
 
@@ -62,10 +92,25 @@ public class GuiSA extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float par3)
 	{
 		clickDelay = Math.max(0, clickDelay - 1);
-		
-		drawRect(5, 5, this.width - 5, this.height - 5, 0xFA2E2E2E);
-
-		super.drawScreen(mouseX, mouseY, par3);
+				
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                
+        int newX = (this.width - this.bookWidth) / 2;
+        int newY = (int) ((this.height - this.bookHeight) / 2.5);
+        if (startX != newX || startY != newY)
+        {
+        	startX = newX;
+        	startY = newY;
+        	initGui();
+        }
+        
+		this.mc.getTextureManager().bindTexture(bgl);
+        this.drawTexturedModalRect(startX, startY, 0, 0, this.bookWidth / 2, this.bookHeight);
+      
+        this.mc.getTextureManager().bindTexture(bgr);
+        this.drawTexturedModalRect(startX + this.bookWidth / 2, startY, 0, 0, this.bookWidth / 2, this.bookHeight);
+        
+        super.drawScreen(mouseX, mouseY, par3);
 	}
 
 	@Override
@@ -98,7 +143,8 @@ public class GuiSA extends GuiScreen
         this.width = par2;
         this.height = par3;
         this.buttonList.clear();
-        this.entryCount = calculateNumberOfEntries(par2,par3);
+        this.initGui();
+        this.entryCount = calculateNumberOfEntries();
         this.initGui();
     }
 
@@ -108,10 +154,27 @@ public class GuiSA extends GuiScreen
 		return false;
 	}
 
-    private int calculateNumberOfEntries(int width, int height) {
-        int padding = 10;
-
-        int result = ((height-30)-padding)/25;
-        return result;
+    @SuppressWarnings("unchecked")
+	private int calculateNumberOfEntries() {
+    	
+    	int len = 0;
+    	int count = 0;
+    	for (GuiButton button : (List<GuiButton>) buttonList)
+    	{
+    		if (button instanceof ButtonCheckBox)
+    		{
+    			count++;
+    			
+    			int height = ((ButtonCheckBox)button).getHeight();
+    			
+    			len += height;
+    			
+        		if (len > bookHeight - height - startYAch)
+        		{
+        			return count;
+        		}
+    		}
+    	}
+    	return count;
     }
 }

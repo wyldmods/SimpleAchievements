@@ -12,13 +12,13 @@ import com.insane.simpleachievements.SimpleAchievements;
 
 public class ButtonCheckBox extends GuiButton
 {
-	private final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "texures/gui/checkBox.png");
+	private static final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "textures/gui/checkboxes.png");
 	
 	private final SimpleAchievement achievement;
 	
-	public ButtonCheckBox(int id, int x, int y, SimpleAchievement achievement, GuiScreen parent)
+	public ButtonCheckBox(int id, int x, int y, int width, int height, SimpleAchievement achievement, GuiScreen parent)
 	{
-		super(id, x, y, parent.width - x - 20, 20, achievement.text);
+		super(id, x, y, width, height, achievement.text);
 		
 		this.achievement = achievement;
 	}
@@ -29,13 +29,25 @@ public class ButtonCheckBox extends GuiButton
 		par1Minecraft.renderEngine.bindTexture(texture);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-		drawTexturedModalRect(xPosition, yPosition, 0, 0, 20, 20);
-		int stringOffset = 0;
-		if (mouseX >= xPosition && mouseX <= xPosition + width && mouseY >= yPosition && mouseY <= yPosition + height)
+		int offsetX = 0, offsetY = 0;
+		
+		if (achievement.getState())
 		{
-			stringOffset -= 1;
+			offsetY = 20;
 		}
 		
-		drawString(par1Minecraft.fontRenderer, this.displayString, xPosition + 30, yPosition + (height / 2) - 4 + stringOffset, achievement.getState() ? 0x00FF00 : 0xFF0000);
+		if (mouseX >= xPosition && mouseX <= xPosition + width && mouseY >= yPosition && mouseY <= yPosition + height)
+		{
+			offsetX = 20;
+		}
+		
+		drawTexturedModalRect(xPosition, yPosition + ((height - 20) / 2), offsetX, offsetY, 20, 20);
+
+		par1Minecraft.fontRenderer.drawSplitString(this.displayString, xPosition + 25, yPosition + (height / 2) - 4, this.width, achievement.getState() ? 0x009105 : 0x000000);
+	}
+
+	public int getHeight()
+	{
+		return this.height;
 	}
 }
