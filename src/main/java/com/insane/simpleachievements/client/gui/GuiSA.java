@@ -10,10 +10,11 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.insane.simpleachievements.AchievementHandler;
-import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
-import com.insane.simpleachievements.AchievementManager;
 import com.insane.simpleachievements.SimpleAchievements;
+import com.insane.simpleachievements.data.DataManager;
+import com.insane.simpleachievements.data.DataHandler;
+import com.insane.simpleachievements.data.Element;
+import static com.insane.simpleachievements.SimpleAchievements.*;
 
 /**
  * Created by Michael on 29/07/2014.
@@ -25,13 +26,10 @@ public class GuiSA extends GuiScreen
 
 	public static final int GUI_ID = 20;
 
-	private AchievementHandler achievements;
+	private DataHandler achievements;
 
 	private int page;
     private int entryCount;
-    
-    private int bookWidth = 417;
-    private int bookHeight = 245;
     
     private int startX;
     private int startY = 2;
@@ -46,7 +44,7 @@ public class GuiSA extends GuiScreen
 		super();
 
 		this.mc = Minecraft.getMinecraft();
-		achievements = AchievementManager.instance().getAchievementsFor(player.username);
+		achievements = DataManager.instance().getAchievementsFor(player.username);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -58,30 +56,35 @@ public class GuiSA extends GuiScreen
 		clickDelay = 5;
 		buttonList.clear();
 
-		SimpleAchievement[] chievs = achievements.getAchievementArr();
+		Element[] chievs = achievements.getAchievementArr();
 		
 		int achOffset = page * entryCount * 2;
 
-		int height = 30;
+		int baseHeight = 30;
+		int yPos = startYAch;
 		
 		//page 1
-		for (int i = achOffset; i < chievs.length; i++)
+		for (int i = achOffset; i < achOffset + entryCount; i++)
 		{
-			int yPos = startYAch + ((i - achOffset) * height);
+			int height = baseHeight + ((ButtonCheckBox.getExpectedLines(chievs[i].text).size() - 1) * 4);
 			if (yPos < bookHeight - height)
 			{
 				buttonList.add(new ButtonCheckBox(i, startX + 25, startY + yPos, bookWidth / 2 - 45, height, chievs[i], this));
 			}
+			yPos += height;
 		}
 		
+		yPos = startYAch;
+		
 		// page 2
-		for (int i = achOffset + entryCount; i < chievs.length; i++)
+		for (int i = achOffset + entryCount; i < achOffset + entryCount; i++)
 		{
-			int yPos = startYAch + ((i - achOffset - entryCount) * height);
+			int height = baseHeight + ((ButtonCheckBox.getExpectedLines(chievs[i].text).size() - 1) * 4);
 			if (yPos < bookHeight - height)
 			{
 				buttonList.add(new ButtonCheckBox(i, startX + 15 + (bookWidth / 2), startY + yPos, bookWidth / 2 - 45, height, chievs[i], this));
 			}
+			yPos += height;
 		}
 
 		buttonList.add(new GuiButton(chievs.length, width - 60, height - 30, 50, 20, "Next"));
@@ -95,8 +98,8 @@ public class GuiSA extends GuiScreen
 				
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 
-        int newX = (this.width - this.bookWidth) / 2;
-        int newY = (int) ((this.height - this.bookHeight) / 2.5);
+        int newX = (this.width - bookWidth) / 2;
+        int newY = (int) ((this.height - bookHeight) / 2.5);
         if (startX != newX || startY != newY)
         {
         	startX = newX;
@@ -105,10 +108,10 @@ public class GuiSA extends GuiScreen
         }
         
 		this.mc.getTextureManager().bindTexture(bgl);
-        this.drawTexturedModalRect(startX, startY, 0, 0, this.bookWidth / 2, this.bookHeight);
+        this.drawTexturedModalRect(startX, startY, 0, 0, bookWidth / 2, bookHeight);
       
         this.mc.getTextureManager().bindTexture(bgr);
-        this.drawTexturedModalRect(startX + this.bookWidth / 2, startY, 0, 0, this.bookWidth / 2, this.bookHeight);
+        this.drawTexturedModalRect(startX + bookWidth / 2, startY, 0, 0, bookWidth / 2, bookHeight);
         
         super.drawScreen(mouseX, mouseY, par3);
 	}
@@ -116,18 +119,18 @@ public class GuiSA extends GuiScreen
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		if (button.id < achievements.numAchievements())
+		if (button.id < achievements.numElements())
 		{
 			achievements.toggleAchievement(button.id);
 		}
 		else if (clickDelay == 0)
 		{
-			if (button.id == achievements.numAchievements())
+			if (button.id == achievements.numElements())
 			{
 				page++;
 				initGui();
 			}
-			else if (button.id == achievements.numAchievements() + 1)
+			else if (button.id == achievements.numElements() + 1)
 			{
 				page = page == 0 ? 0 : page - 1;
 				initGui();
@@ -162,9 +165,7 @@ public class GuiSA extends GuiScreen
     	for (GuiButton button : (List<GuiButton>) buttonList)
     	{
     		if (button instanceof ButtonCheckBox)
-    		{
-    			count++;
-    			
+    		{    			
     			int height = ((ButtonCheckBox)button).getHeight();
     			
     			len += height;
@@ -173,6 +174,8 @@ public class GuiSA extends GuiScreen
         		{
         			return count;
         		}
+        		
+        		count++;
     		}
     	}
     	return count;

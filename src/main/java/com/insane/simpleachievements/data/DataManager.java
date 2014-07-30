@@ -1,4 +1,4 @@
-package com.insane.simpleachievements;
+package com.insane.simpleachievements.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,8 +16,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.insane.simpleachievements.SimpleAchievements;
 
-public class AchievementManager
+public class DataManager
 {
 	@ForgeSubscribe
 	public void onWorldLoad(WorldEvent.Load load)
@@ -33,20 +34,20 @@ public class AchievementManager
 			save();
 	}
 
-	private static AchievementManager instance;
+	private static DataManager instance;
 
-	public static AchievementManager instance()
+	public static DataManager instance()
 	{
-		return instance == null ? instance = new AchievementManager() : instance;
+		return instance == null ? instance = new DataManager() : instance;
 	}
 
-	private Map<String, AchievementHandler> map;
+	private Map<String, DataHandler> map;
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
 
-	private AchievementManager()
+	private DataManager()
 	{
-		map = new HashMap<String, AchievementHandler>();
+		map = new HashMap<String, DataHandler>();
 	}
 
 	public void load()
@@ -84,23 +85,23 @@ public class AchievementManager
 		map.get(username).toggleAchievement(id);
 	}
 
-	public AchievementHandler getAchievementsFor(String username)
+	public DataHandler getAchievementsFor(String username)
 	{
 		checkMap(username);
 
 		return map.get(username);
 	}
 
-	void checkMap(String username)
+	public void checkMap(String username)
 	{
 		if (!map.containsKey(username))
 		{
-			map.put(username, new AchievementHandler());
+			map.put(username, new DataHandler());
 		}
 	}
 
 	@SuppressWarnings("serial")
-	private static Map<String, AchievementHandler> loadMap(File file) throws FileNotFoundException
+	private static Map<String, DataHandler> loadMap(File file) throws FileNotFoundException
 	{
 		String json = "";
 
@@ -111,11 +112,11 @@ public class AchievementManager
 		}
 		scan.close();
 
-		Map<String, AchievementHandler> ret = gson.fromJson(json, new TypeToken<Map<String, AchievementHandler>>() {}.getType());
-		return ret == null ? new HashMap<String, AchievementHandler>() : ret;
+		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {}.getType());
+		return ret == null ? new HashMap<String, DataHandler>() : ret;
 	}
 
-	private static void saveMap(File file, AchievementManager instance)
+	private static void saveMap(File file, DataManager instance)
 	{
 		String json = gson.toJson(instance.map);
 
@@ -135,7 +136,7 @@ public class AchievementManager
 		}
 	}
 
-    public void changeMap(EntityPlayer player, AchievementHandler handler) {
+    public void changeMap(EntityPlayer player, DataHandler handler) {
         map.put(player.username, handler);
     }
 }

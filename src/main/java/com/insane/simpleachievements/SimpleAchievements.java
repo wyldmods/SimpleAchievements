@@ -13,8 +13,10 @@ import java.util.Scanner;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.insane.simpleachievements.AchievementHandler.SimpleAchievement;
 import com.insane.simpleachievements.BlockAchievementBlock.TileEntityAchievementStand;
+import com.insane.simpleachievements.data.DataManager;
+import com.insane.simpleachievements.data.DataHandler;
+import com.insane.simpleachievements.data.Element;
 import com.insane.simpleachievements.networking.PacketHandlerSA;
 
 import cpw.mods.fml.common.Mod;
@@ -43,15 +45,18 @@ public class SimpleAchievements
 
 	public static Block achievementStand;
 
-	public static List<SimpleAchievement> defaults;
+	public static List<Element> defaults;
 
+	public static int bookWidth = 417;
+    public static int bookHeight = 245;
+    
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		PacketHandlerSA.registerSerializeable(AchievementHandler.class);
+		PacketHandlerSA.registerSerializeable(DataHandler.class);
 		
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		MinecraftForge.EVENT_BUS.register(AchievementManager.instance());
+		MinecraftForge.EVENT_BUS.register(DataManager.instance());
 
 		achievementConfig = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID + "/achievementList.txt");
 		create(achievementConfig);
@@ -72,7 +77,7 @@ public class SimpleAchievements
 		GameRegistry.registerBlock(achievementStand, MODID + "achievementBlock");
 	}
 
-	public static List<SimpleAchievement> readInAchievements()
+	public static List<Element> readInAchievements()
 	{
 		try
 		{
@@ -86,10 +91,13 @@ public class SimpleAchievements
 
 			scan.close();
 
-			ArrayList<SimpleAchievement> ret = new ArrayList<SimpleAchievement>();
+			ArrayList<Element> ret = new ArrayList<Element>();
 			for (String s : list)
 			{
-				ret.add(new SimpleAchievement(s));
+				Element ele = new Element();
+				ele.text = s;
+				ret.add(ele);
+				// TODO FIX ^^
 			}
 			return ret;
 		}

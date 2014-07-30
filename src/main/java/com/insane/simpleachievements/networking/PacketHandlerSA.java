@@ -18,10 +18,10 @@ import cpw.mods.fml.common.network.Player;
 
 public class PacketHandlerSA implements IPacketHandler
 {
-	private static BiMap<Byte, Class<? extends IByteEncodable>> packetIdentifiers = HashBiMap.create(); 
+	private static BiMap<Byte, Class<? extends IByteEncodable<?>>> packetIdentifiers = HashBiMap.create(); 
 	private static byte id = 0;
 	
-	public static void registerSerializeable(Class<? extends IByteEncodable> clazz)
+	public static void registerSerializeable(Class<? extends IByteEncodable<?>> clazz)
 	{
 		packetIdentifiers.put(id++, clazz);
 	}
@@ -33,10 +33,10 @@ public class PacketHandlerSA implements IPacketHandler
 	{
 		if (packet.channel.equals(CHANNEL))
 		{			
-			Class<? extends IByteEncodable> type = getType(packet);
+			Class<? extends IByteEncodable<?>> type = getType(packet);
 			packet = stripIdent(packet);
 			
-			IByteEncodable inst;
+			IByteEncodable<?> inst;
 			
 			try
 			{
@@ -49,11 +49,11 @@ public class PacketHandlerSA implements IPacketHandler
 
 			DataInputStream dis = new DataInputStream(new ByteArrayInputStream(packet.data));
 
-			inst.decode(dis, packet.length, (EntityPlayer) player);
+			inst.decode(dis, (EntityPlayer) player);
 		}
 	}
 
-	public static void sendToClient(Player player, IByteEncodable obj)
+	public static void sendToClient(Player player, IByteEncodable<?> obj)
 	{
 		if (obj == null) { return; }
 		
@@ -94,7 +94,7 @@ public class PacketHandlerSA implements IPacketHandler
 		return packet;
 	}
 	
-	private static byte[] addIdent(byte[] data, IByteEncodable obj)
+	private static byte[] addIdent(byte[] data, IByteEncodable<?> obj)
 	{
 		Byte ident = packetIdentifiers.inverse().get(obj.getClass());
 		
@@ -109,10 +109,10 @@ public class PacketHandlerSA implements IPacketHandler
 	}
 	
 
-	private Class<? extends IByteEncodable> getType(Packet250CustomPayload packet)
+	private Class<? extends IByteEncodable<?>> getType(Packet250CustomPayload packet)
 	{
 		byte ident = packet.data[packet.data.length - 1];
-		Class<? extends IByteEncodable> type = packetIdentifiers.get(ident);
+		Class<? extends IByteEncodable<?>> type = packetIdentifiers.get(ident);
 		
 		if (type == null)
 		{

@@ -4,9 +4,9 @@ import java.io.DataInputStream;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public interface IByteEncodable
+public interface IByteEncodable<T>
 {
 	public byte[] encode();
 	
-	public void decode(DataInputStream data, int length, EntityPlayer player);
+	public T decode(DataInputStream data, EntityPlayer player);
 }

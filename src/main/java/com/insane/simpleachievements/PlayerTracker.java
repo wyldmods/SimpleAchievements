@@ -1,5 +1,6 @@
 package com.insane.simpleachievements;
 
+import com.insane.simpleachievements.data.DataManager;
 import com.insane.simpleachievements.networking.PacketHandlerSA;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,8 +16,8 @@ public class PlayerTracker implements IPlayerTracker
 	public void onPlayerLogin(EntityPlayer player)
 	{
 	    if (player!=null && !player.worldObj.isRemote) {
-            AchievementManager.instance().checkMap(player.username);
-            PacketHandlerSA.sendToClient((Player) player, AchievementManager.instance().getAchievementsFor(player.username));
+            DataManager.instance().checkMap(player.username);
+            PacketHandlerSA.sendToClient((Player) player, DataManager.instance().getAchievementsFor(player.username));
         }
 	}
 
