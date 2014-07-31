@@ -95,7 +95,7 @@ public class SimpleAchievements
 			for (String s : list)
 			{
 				Element ele = new Element();
-				ele.text = s;
+				ele.setText(s);
 				ret.add(ele);
 				// TODO FIX ^^
 			}

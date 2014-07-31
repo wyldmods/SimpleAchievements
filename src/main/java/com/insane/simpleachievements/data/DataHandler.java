@@ -48,7 +48,7 @@ public class DataHandler implements IByteEncodable<DataHandler>
 
 	public String getAchievementText(int id)
 	{
-		return elements[id].text;
+		return elements[id].getText();
 	}
 
 	public boolean getAchievementState(int id)
