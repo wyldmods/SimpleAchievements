@@ -52,10 +52,20 @@ public class SimpleAchievements
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		configDir = event.getModConfigurationDirectory();
+		configDir = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID);
 		achievementConfig = new File(configDir.getAbsolutePath() + "/achievementList.txt");
-		divConfig = new File(configDir.getAbsoluteFile() + "/divConfig.json");
-		create(achievementConfig, divConfig);
+		divConfig = new File(configDir.getAbsolutePath() + "/divConfig.json");
+
+		try
+		{
+			create(achievementConfig, divConfig);
+			DataManager.instance().initFormatting();
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 
 		PacketHandlerSA.registerSerializeable(DataHandler.class);
@@ -79,23 +89,15 @@ public class SimpleAchievements
 		GameRegistry.registerBlock(achievementStand, MODID + "achievementBlock");
 	}
 
-	private void create(File... files)
+	private void create(File... files) throws IOException
 	{
 		for (File file : files)
 		{
 			if (!file.exists())
 			{
-				try
-				{
-					file.getParentFile().mkdirs();
-					file.createNewFile();
-					System.out.println(file.getAbsolutePath());
-				}
-				catch (IOException e)
-				{
-					System.out.print("Could not create " + file.getAbsolutePath() + ". Reason: ");
-					System.out.println(e);
-				}
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+				System.out.println(file.getAbsolutePath());
 			}
 		}
 	}

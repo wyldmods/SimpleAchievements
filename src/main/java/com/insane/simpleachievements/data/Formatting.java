@@ -10,11 +10,21 @@ public class Formatting
 	
 	public Alignment align = Alignment.LEFT;
 	
+	public Formatting() {}
+	
 	public Formatting(boolean isAchievmenet, int color, int colorChecked, String align)
 	{
 		this.isAchievement = isAchievmenet;
 		this.color = color;
 		this.colorChecked = colorChecked;
 		this.align = Alignment.valueOf(align.toUpperCase());
+	}
+
+	public void applyTo(Element ele)
+	{
+		ele.color = color;
+		ele.colorChecked = colorChecked;
+		ele.isAchievement = isAchievement;
+		ele.align = align;
 	}
 }

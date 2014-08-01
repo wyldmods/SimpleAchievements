@@ -9,7 +9,9 @@ import java.util.Scanner;
 import net.minecraftforge.common.Configuration;
 
 import com.insane.simpleachievements.SimpleAchievements;
+import com.insane.simpleachievements.data.DataManager;
 import com.insane.simpleachievements.data.Element;
+import com.insane.simpleachievements.data.Formatting;
 
 public class ConfigHandler
 {
@@ -22,6 +24,7 @@ public class ConfigHandler
 		Configuration config = new Configuration(file);
 		
 		config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr, "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
+		
 		
 		defaultElements = getDefaultElements();
 	}
@@ -42,7 +45,10 @@ public class ConfigHandler
 					throw new IllegalArgumentException("Illegal format \"" + s + "\". Format must be [text]" + endStr + "[divClass]");
 				}
 				Element ele = new Element(args[0]);
-				// TODO get div class and apply to element
+				Formatting div = DataManager.instance().getFormat(Integer.parseInt(args[1]));
+				
+				div.applyTo(ele);
+				
 				ret.add(ele);
 			}
 

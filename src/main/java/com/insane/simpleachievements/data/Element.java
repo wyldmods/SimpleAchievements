@@ -18,11 +18,10 @@ public class Element implements IByteEncodable<Element>
 		LEFT, CENTER, RIGHT;
 	}
 
-	@Deprecated
 	public String text;
 	public boolean state;
 
-	private boolean isAchievement = false;
+	public boolean isAchievement = false;
 
 	public int color = 0x000000;
 	public int height = 30;
@@ -31,7 +30,7 @@ public class Element implements IByteEncodable<Element>
 
 	public static final String lineSplit = "|";
 
-	private Alignment align = LEFT;
+	public Alignment align = LEFT;
 	
 	public Element(){}
 	

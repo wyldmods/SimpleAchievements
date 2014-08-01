@@ -23,42 +23,60 @@ public class DataManager
 	@ForgeSubscribe
 	public void onWorldLoad(WorldEvent.Load load)
 	{
-		if (!load.world.isRemote)
+		if (!load.world.isRemote && !loaded)
 			load();
 	}
 
 	@ForgeSubscribe
 	public void onWorldSave(WorldEvent.Save save)
 	{
-		if (!save.world.isRemote)
+		if (!save.world.isRemote && !saved)
 			save();
 	}
 
-	private static DataManager instance;
+	private static DataManager instance = new DataManager();
 
 	public static DataManager instance()
 	{
-		return instance == null ? instance = new DataManager() : instance;
+		return instance;
 	}
 
 	private Map<String, DataHandler> map;
 	private Map<Integer, Formatting> formats;
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
+	
+	private boolean loaded = false, saved = false;
 
 	private DataManager()
 	{
 		map = new HashMap<String, DataHandler>();
 		formats = new HashMap<Integer, Formatting>();
 	}
-	
-	public void initFormatting()
+
+	@SuppressWarnings("serial")
+	public void initFormatting() throws FileNotFoundException
 	{
-		// TODO
+		String s = "";
+		Scanner scan = new Scanner(SimpleAchievements.divConfig);
+		while (scan.hasNextLine())
+		{
+			s += scan.nextLine() + "\n";
+		}
+
+		formats = gson.fromJson(s, new TypeToken<Map<Integer, Formatting>>(){}.getType());
+		if (formats == null)
+		{
+			formats = new HashMap<Integer, Formatting>();
+			formats.put(0, new Formatting());
+		}
+		scan.close();
 	}
 
 	public void load()
 	{
+		loaded = true;
+		
 		saveDir = new File(DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath() + "/" + SimpleAchievements.MODID);
 		saveDir.mkdirs();
 		saveFile = new File(saveDir.getAbsolutePath() + "/" + "achievements.json");
@@ -82,7 +100,10 @@ public class DataManager
 
 	public void save()
 	{
-		saveMap(saveFile, this);
+		saved = true;
+		
+		saveMap(saveFile, this, this.map);
+		saveMap(SimpleAchievements.divConfig, this, this.formats);
 	}
 
 	public void toggleAchievement(String username, int id)
@@ -92,7 +113,7 @@ public class DataManager
 		map.get(username).toggleAchievement(id);
 	}
 
-	public DataHandler getAchievementsFor(String username)
+	public DataHandler getHandlerFor(String username)
 	{
 		checkMap(username);
 
@@ -119,13 +140,14 @@ public class DataManager
 		}
 		scan.close();
 
-		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {}.getType());
+		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {
+		}.getType());
 		return ret == null ? new HashMap<String, DataHandler>() : ret;
 	}
 
-	private static void saveMap(File file, DataManager instance)
+	private static void saveMap(File file, DataManager instance, Object map)
 	{
-		String json = gson.toJson(instance.map);
+		String json = gson.toJson(map);
 
 		try
 		{
@@ -143,7 +165,13 @@ public class DataManager
 		}
 	}
 
-    public void changeMap(EntityPlayer player, DataHandler handler) {
-        map.put(player.username, handler);
-    }
+	public void changeMap(EntityPlayer player, DataHandler handler)
+	{
+		map.put(player.username, handler);
+	}
+	
+	public Formatting getFormat(int div)
+	{
+		return formats.get(div);
+	}
 }

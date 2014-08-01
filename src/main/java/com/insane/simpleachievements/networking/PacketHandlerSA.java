@@ -68,7 +68,7 @@ public class PacketHandlerSA implements IPacketHandler
 				
 				try
 				{
-					DataManager.instance().getAchievementsFor(in.readUTF()).toggleAchievement(in.readInt());
+					DataManager.instance().getHandlerFor(in.readUTF()).toggleAchievement(in.readInt());
 				}
 				catch (IOException e)
 				{
@@ -174,7 +174,7 @@ public class PacketHandlerSA implements IPacketHandler
 	{
 		packet.data = ArrayUtils.remove(packet.data, packet.data.length - 1);
 		packet.data = ArrayUtils.remove(packet.data, 0);
-		packet.length--;
+		packet.length -= 2;
 		return packet;
 	}
 }

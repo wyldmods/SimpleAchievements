@@ -28,7 +28,7 @@ public class GuiSA extends GuiScreen
 
 	public static final int GUI_ID = 20;
 
-	private DataHandler achievements;
+	private DataHandler elements;
 
 	private int page;
     private int entryCount;
@@ -50,7 +50,7 @@ public class GuiSA extends GuiScreen
 		super();
 
 		this.mc = Minecraft.getMinecraft();
-		achievements = DataManager.instance().getAchievementsFor(player.username);
+		elements = DataManager.instance().getHandlerFor(player.username);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -62,7 +62,7 @@ public class GuiSA extends GuiScreen
 		clickDelay = 5;
 		buttonList.clear();
 
-		Element[] chievs = achievements.getAchievementArr();
+		Element[] chievs = elements.getAchievementArr();
 		
 		achOffset = page * entryCount * 2;
 
@@ -128,18 +128,18 @@ public class GuiSA extends GuiScreen
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		if (button.id < achievements.numElements())
+		if (button.id < elements.numElements())
 		{
-			achievements.toggleAchievement(button.id);
+			elements.toggleAchievement(button.id);
 		}
 		else if (clickDelay == 0)
 		{
-			if (button.id == achievements.numElements())
+			if (button.id == elements.numElements())
 			{
 				page++;
 				initGui();
 			}
-			else if (button.id == achievements.numElements() + 1)
+			else if (button.id == elements.numElements() + 1)
 			{
 				page = page == 0 ? 0 : page - 1;
 				initGui();

@@ -17,7 +17,7 @@ public class PlayerTracker implements IPlayerTracker
 	{
 	    if (player!=null && !player.worldObj.isRemote) {
             DataManager.instance().checkMap(player.username);
-            PacketHandlerSA.sendToClient((Player) player, DataManager.instance().getAchievementsFor(player.username));
+            PacketHandlerSA.sendToClient((Player) player, DataManager.instance().getHandlerFor(player.username));
         }
 	}
 

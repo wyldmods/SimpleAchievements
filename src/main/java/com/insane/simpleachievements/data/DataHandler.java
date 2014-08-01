@@ -17,12 +17,12 @@ public class DataHandler implements IByteEncodable<DataHandler>
 {
 	private Element[] elements;
 	
-	public DataHandler(List<Element> listOfAchievements)
+	public DataHandler(List<Element> listOfElements)
 	{
-		elements = new Element[listOfAchievements.size()];
-		for (int i = 0; i < listOfAchievements.size(); i++)
+		elements = new Element[listOfElements.size()];
+		for (int i = 0; i < listOfElements.size(); i++)
 		{
-			elements[i] = listOfAchievements.get(i);
+			elements[i] = listOfElements.get(i);
 		}
 	}
 
