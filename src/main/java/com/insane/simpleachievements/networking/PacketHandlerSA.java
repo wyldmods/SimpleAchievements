@@ -15,7 +15,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.insane.simpleachievements.data.DataManager;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;

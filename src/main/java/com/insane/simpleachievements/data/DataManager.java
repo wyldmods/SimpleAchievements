@@ -42,12 +42,19 @@ public class DataManager
 	}
 
 	private Map<String, DataHandler> map;
+	private Map<Integer, Formatting> formats;
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
 
 	private DataManager()
 	{
 		map = new HashMap<String, DataHandler>();
+		formats = new HashMap<Integer, Formatting>();
+	}
+	
+	public void initFormatting()
+	{
+		// TODO
 	}
 
 	public void load()

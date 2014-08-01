@@ -10,13 +10,13 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.insane.simpleachievements.SimpleAchievements;
+import com.insane.simpleachievements.config.ConfigHandler;
 import com.insane.simpleachievements.networking.IByteEncodable;
 
 public class DataHandler implements IByteEncodable<DataHandler>
 {
 	private Element[] elements;
-
+	
 	public DataHandler(List<Element> listOfAchievements)
 	{
 		elements = new Element[listOfAchievements.size()];
@@ -28,7 +28,7 @@ public class DataHandler implements IByteEncodable<DataHandler>
 
 	public DataHandler()
 	{
-		this(SimpleAchievements.defaults);
+		this(ConfigHandler.defaultElements);
 	}
 
 	public void toggleAchievement(Element ach)

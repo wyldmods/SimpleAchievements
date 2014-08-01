@@ -7,15 +7,14 @@ package com.insane.simpleachievements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.insane.simpleachievements.BlockAchievementBlock.TileEntityAchievementStand;
-import com.insane.simpleachievements.data.DataManager;
+import com.insane.simpleachievements.config.ConfigHandler;
 import com.insane.simpleachievements.data.DataHandler;
+import com.insane.simpleachievements.data.DataManager;
 import com.insane.simpleachievements.data.Element;
 import com.insane.simpleachievements.networking.PacketHandlerSA;
 
@@ -28,7 +27,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0")
-@NetworkMod(clientSideRequired = true, channels = PacketHandlerSA.CHANNEL , packetHandler = PacketHandlerSA.class)
+@NetworkMod(clientSideRequired = true, channels = PacketHandlerSA.CHANNEL, packetHandler = PacketHandlerSA.class)
 public class SimpleAchievements
 {
 	public static ArrayList<String> achievements = null;
@@ -41,26 +40,29 @@ public class SimpleAchievements
 	@SidedProxy(clientSide = "com.insane.simpleachievements.client.ClientProxy", serverSide = "com.insane.simpleachievements.CommonProxy")
 	public static CommonProxy proxy;
 
+	public static File configDir;
 	public static File achievementConfig;
+	public static File divConfig;
 
 	public static Block achievementStand;
 
-	public static List<Element> defaults;
-
 	public static int bookWidth = 417;
-    public static int bookHeight = 245;
-    
+	public static int bookHeight = 245;
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		configDir = event.getModConfigurationDirectory();
+		achievementConfig = new File(configDir.getAbsolutePath() + "/achievementList.txt");
+		divConfig = new File(configDir.getAbsoluteFile() + "/divConfig.json");
+		create(achievementConfig, divConfig);
+		ConfigHandler.init(event.getSuggestedConfigurationFile());
+
 		PacketHandlerSA.registerSerializeable(DataHandler.class);
-		
+		PacketHandlerSA.registerSerializeable(Element.class);
+
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		MinecraftForge.EVENT_BUS.register(DataManager.instance());
-
-		achievementConfig = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID + "/achievementList.txt");
-		create(achievementConfig);
-		defaults = readInAchievements();
 	}
 
 	@Mod.EventHandler
@@ -71,58 +73,29 @@ public class SimpleAchievements
 		achievementStand = new BlockAchievementBlock(500);
 		GameRegistry.registerBlock(achievementStand, "sa.achievementStand");
 		GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
-		
+
 		proxy.registerRenderers();
 
 		GameRegistry.registerBlock(achievementStand, MODID + "achievementBlock");
 	}
 
-	public static List<Element> readInAchievements()
+	private void create(File... files)
 	{
-		try
+		for (File file : files)
 		{
-			Scanner scan = new Scanner(achievementConfig);
-			ArrayList<String> list = new ArrayList<String>();
-			while (scan.hasNextLine())
+			if (!file.exists())
 			{
-				String t = scan.nextLine();
-				list.add(t);
-			}
-
-			scan.close();
-
-			ArrayList<Element> ret = new ArrayList<Element>();
-			for (String s : list)
-			{
-				Element ele = new Element();
-				ele.setText(s);
-				ret.add(ele);
-				// TODO FIX ^^
-			}
-			return ret;
-		}
-		catch (IOException error)
-		{
-			System.out.print("Something is derped with Achievement I/O. Reason: ");
-			System.out.println(error);
-			return null;
-		}
-	}
-
-	private void create(File file)
-	{
-		if (!file.exists())
-		{
-			try
-			{
-				file.getParentFile().mkdirs();
-				file.createNewFile();
-				System.out.println(file.getAbsolutePath());
-			}
-			catch (IOException e)
-			{
-				System.out.print("Could not create " + file.getAbsolutePath() + ". Reason: ");
-				System.out.println(e);
+				try
+				{
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+					System.out.println(file.getAbsolutePath());
+				}
+				catch (IOException e)
+				{
+					System.out.print("Could not create " + file.getAbsolutePath() + ". Reason: ");
+					System.out.println(e);
+				}
 			}
 		}
 	}
