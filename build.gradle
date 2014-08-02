@@ -49,7 +49,7 @@ if (System.getenv().ARTIFACT_VERSION != null) {
 }
 
 version = "MC${config.minecraft_version}-${artifact_version}-${System.getenv().BUILD_NUMBER}"
-archivesBaseName = "SuperMassiveTech"
+archivesBaseName = "SimpleAchievements"
 
 minecraft {
     version = "${config.minecraft_version}-${config.forge_version}"
