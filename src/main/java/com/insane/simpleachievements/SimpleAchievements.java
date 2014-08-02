@@ -1,9 +1,5 @@
 package com.insane.simpleachievements;
 
-/**
- * Created by Michael on 28/07/2014.
- */
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

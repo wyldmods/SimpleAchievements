@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.insane.simpleachievements.SimpleAchievements;
+import com.insane.simpleachievements.client.gui.Offset;
 
 public class DataManager
 {
@@ -43,6 +45,7 @@ public class DataManager
 
 	private Map<String, DataHandler> map;
 	private Map<Integer, Formatting> formats;
+	private Map<String, Offset> specialUsers;
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
 	
@@ -52,6 +55,7 @@ public class DataManager
 	{
 		map = new HashMap<String, DataHandler>();
 		formats = new HashMap<Integer, Formatting>();
+		specialUsers = new HashMap<String, Offset>();
 	}
 
 	@SuppressWarnings("serial")
@@ -72,10 +76,32 @@ public class DataManager
 		}
 		scan.close();
 	}
+	
+	@SuppressWarnings("serial")
+	public void initSpecialUsers() throws FileNotFoundException
+	{
+		URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + "specialUsers.json");
+		File file = new File(url.getFile());
+	
+		String s = "";
+		Scanner scan = new Scanner(file);
+		while (scan.hasNextLine())
+		{
+			s += scan.nextLine() + "\n";
+		}
+		
+		specialUsers = gson.fromJson(s, new TypeToken<Map<String, Offset>>(){}.getType());
+		if (specialUsers == null)
+		{
+			specialUsers = new HashMap<String, Offset>();
+		}
+		scan.close();
+	}
 
 	public void load()
 	{
 		loaded = true;
+		saved = false;
 		
 		saveDir = new File(DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath() + "/" + SimpleAchievements.MODID);
 		saveDir.mkdirs();
@@ -91,6 +117,8 @@ public class DataManager
 			{
 				map = loadMap(saveFile);
 			}
+			
+			initSpecialUsers();
 		}
 		catch (IOException e)
 		{
@@ -101,6 +129,7 @@ public class DataManager
 	public void save()
 	{
 		saved = true;
+		loaded = false;
 		
 		saveMap(saveFile, this, this.map);
 		saveMap(SimpleAchievements.divConfig, this, this.formats);
@@ -140,8 +169,7 @@ public class DataManager
 		}
 		scan.close();
 
-		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {
-		}.getType());
+		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {}.getType());
 		return ret == null ? new HashMap<String, DataHandler>() : ret;
 	}
 
@@ -173,5 +201,12 @@ public class DataManager
 	public Formatting getFormat(int div)
 	{
 		return formats.get(div);
+	}
+
+	private static final Offset defaultOffset = new Offset(0, 0);
+	public Offset getOffsetFor(String username)
+	{
+		Offset offset = specialUsers.get(username);
+		return offset == null ? defaultOffset : offset;
 	}
 }

@@ -16,7 +16,7 @@ import com.insane.simpleachievements.networking.IByteEncodable;
 public class DataHandler implements IByteEncodable<DataHandler>
 {
 	private Element[] elements;
-	
+
 	public DataHandler(List<Element> listOfElements)
 	{
 		elements = new Element[listOfElements.size()];
@@ -111,8 +111,7 @@ public class DataHandler implements IByteEncodable<DataHandler>
 		this.elements = newElements.toArray(new Element[] {});
 
 		DataManager.instance().changeMap(player, this);
-		
+
 		return this;
 	}
-
 }

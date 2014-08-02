@@ -15,9 +15,6 @@ import com.insane.simpleachievements.client.gui.GuiSA;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * Created by Michael on 29/07/2014.
- */
 public class BlockAchievementBlock extends Block implements ITileEntityProvider{
 
 	@SideOnly(Side.CLIENT)

@@ -13,7 +13,7 @@ import com.insane.simpleachievements.networking.IByteEncodable;
 
 public class Element implements IByteEncodable<Element>
 {
-	enum Alignment
+	public enum Alignment
 	{
 		LEFT, CENTER, RIGHT;
 	}

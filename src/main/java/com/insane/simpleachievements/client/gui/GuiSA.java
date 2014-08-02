@@ -18,9 +18,6 @@ import com.insane.simpleachievements.data.DataHandler;
 import com.insane.simpleachievements.data.DataManager;
 import com.insane.simpleachievements.data.Element;
 
-/**
- * Created by Michael on 29/07/2014.
- */
 public class GuiSA extends GuiScreen
 {
 	private final int maxDelay = 5;
@@ -73,11 +70,11 @@ public class GuiSA extends GuiScreen
 		//page 1
 		for (int i = achOffset; i < chievs.length; i++)
 		{
-			int height = baseHeight + (ButtonCheckBox.getExpectedLines(chievs[i], width) * charHeight);
+			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width - 5) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonCheckBox button = new ButtonCheckBox(i, startX + 25, startY + yPos, width, height, chievs[i], this);
-				yPos += button.getHeight();
+				ButtonElement button = new ButtonElement(i, startX + 25, startY + yPos, width, chievs[i]);
+				yPos += button.getHeight() + 10;
 				buttonList.add(button);
 			}
 		}
@@ -87,10 +84,10 @@ public class GuiSA extends GuiScreen
 		// page 2
 		for (int i = achOffset + entryCount; i < chievs.length; i++)
 		{
-			int height = baseHeight + (ButtonCheckBox.getExpectedLines(chievs[i], width) * charHeight);
+			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonCheckBox button = new ButtonCheckBox(i, startX + 10 + (bookWidth / 2), startY + yPos, width, height, chievs[i], this);
+				ButtonElement button = new ButtonElement(i, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[i]);
 				yPos += button.getHeight();
 				buttonList.add(button);
 			}
@@ -173,11 +170,11 @@ public class GuiSA extends GuiScreen
     	int count = 0;
     	for (GuiButton button : (List<GuiButton>) buttonList)
     	{
-    		if (button instanceof ButtonCheckBox)
+    		if (button instanceof ButtonElement)
     		{    	
         		count++;
 
-    			int height = ((ButtonCheckBox)button).getHeight();
+    			int height = ((ButtonElement)button).getHeight();
     			
     			len += height;
     			

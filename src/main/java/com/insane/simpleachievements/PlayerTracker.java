@@ -7,9 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.Player;
 
-/**
- * Created by Michael on 28/07/2014.
- */
 public class PlayerTracker implements IPlayerTracker
 {
 	@Override

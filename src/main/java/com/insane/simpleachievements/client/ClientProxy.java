@@ -6,9 +6,6 @@ import com.insane.simpleachievements.CommonProxy;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 
-/**
- * Created by Michael on 28/07/2014.
- */
 public class ClientProxy extends CommonProxy
 {
 	public void registerRenderers()

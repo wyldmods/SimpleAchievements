@@ -6,9 +6,6 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-/**
- * Created by Michael on 28/07/2014.
- */
 public class CommonProxy implements IGuiHandler {
     public void registerRenderers() {}
 

@@ -63,6 +63,8 @@ public class PacketHandlerSA implements IPacketHandler
 				inst.decode(dis, (EntityPlayer) player);
 				break;
 			case ID_ACHIEVEMENT_UPDATE:
+				packet.data = ArrayUtils.remove(packet.data, 0);
+				
 				ByteArrayInputStream bin = new ByteArrayInputStream(packet.data);
 				DataInputStream in = new DataInputStream(bin);
 				
@@ -86,7 +88,7 @@ public class PacketHandlerSA implements IPacketHandler
 		
 		byte[] data = obj.encode();
 		
-		ArrayUtils.add(data, ID_BYTE_ENCODABLE, (byte) 0);
+		data = ArrayUtils.add(data, 0, ID_BYTE_ENCODABLE);
 		
 		data = addIdent(data, obj);
 		
