@@ -70,11 +70,11 @@ public class GuiSA extends GuiScreen
 		//page 1
 		for (int i = achOffset; i < chievs.length; i++)
 		{
-			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width - 5) * charHeight);
+			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
 				ButtonElement button = new ButtonElement(i, startX + 25, startY + yPos, width, chievs[i]);
-				yPos += button.getHeight() + 10;
+				yPos += button.getHeight();
 				buttonList.add(button);
 			}
 		}

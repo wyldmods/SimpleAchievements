@@ -72,7 +72,7 @@ public class ButtonElement extends GuiButton
 			{
 				String s = lines.get(i);
 				fnt.drawString(s, xPosition + getIconOffset() + (bookWidth / 4) - 20 - (fnt.getStringWidth(s) / 2), (int) (yPosition + (height / 2) - lineNum * 4) + i * 8,
-						element.getColorBasedOnState());
+						element.getColorBasedOnState(), element.shadow);
 			}
 			break;
 		case LEFT:
@@ -83,7 +83,7 @@ public class ButtonElement extends GuiButton
 			for (int i = 0; i < lines.size(); i++)
 			{
 				String s = lines.get(i);
-				fnt.drawSplitString(s, xPosition + 25 + this.width - fnt.getStringWidth(s), (int) (yPosition + (height / 2) - lineNum * 4) + i * 8, this.width, element.getColorBasedOnState());
+				fnt.drawString(s, xPosition + 25 + this.width - fnt.getStringWidth(s), (int) (yPosition + (height / 2) - lineNum * 4) + i * 8, element.getColorBasedOnState(), element.shadow);
 			}
 			break;
 		}
