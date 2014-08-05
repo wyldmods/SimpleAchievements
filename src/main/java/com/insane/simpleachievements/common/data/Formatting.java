@@ -1,6 +1,6 @@
-package com.insane.simpleachievements.data;
+package com.insane.simpleachievements.common.data;
 
-import com.insane.simpleachievements.data.Element.Alignment;
+import com.insane.simpleachievements.common.data.Element.Alignment;
 
 public class Formatting
 {

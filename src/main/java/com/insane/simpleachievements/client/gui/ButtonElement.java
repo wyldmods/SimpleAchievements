@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.data.DataManager;
-import com.insane.simpleachievements.data.Element;
+import com.insane.simpleachievements.common.data.DataManager;
+import com.insane.simpleachievements.common.data.Element;
 
 public class ButtonElement extends GuiButton
 {

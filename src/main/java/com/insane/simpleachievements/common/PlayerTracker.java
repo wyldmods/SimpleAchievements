@@ -1,7 +1,7 @@
-package com.insane.simpleachievements;
+package com.insane.simpleachievements.common;
 
-import com.insane.simpleachievements.data.DataManager;
-import com.insane.simpleachievements.networking.PacketHandlerSA;
+import com.insane.simpleachievements.common.data.DataManager;
+import com.insane.simpleachievements.common.networking.PacketHandlerSA;
 
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;

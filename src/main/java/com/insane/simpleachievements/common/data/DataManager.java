@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.data;
+package com.insane.simpleachievements.common.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;

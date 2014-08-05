@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.networking;
+package com.insane.simpleachievements.common.networking;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.insane.simpleachievements.data.DataManager;
+import com.insane.simpleachievements.common.data.DataManager;
 
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;

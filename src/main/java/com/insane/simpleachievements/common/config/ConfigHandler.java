@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.config;
+package com.insane.simpleachievements.common.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.util.Scanner;
 import net.minecraftforge.common.Configuration;
 
 import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.data.DataManager;
-import com.insane.simpleachievements.data.Element;
-import com.insane.simpleachievements.data.Formatting;
+import com.insane.simpleachievements.common.data.DataManager;
+import com.insane.simpleachievements.common.data.Element;
+import com.insane.simpleachievements.common.data.Formatting;
 
 public class ConfigHandler
 {
@@ -19,12 +19,21 @@ public class ConfigHandler
 	
 	public static List<Element> defaultElements;
 	
+	public static int standID = 500;
+	public static int decorationID = 501;
+	
+	public static int bookID = 5000;
+	
 	public static void init(File file)
 	{
 		Configuration config = new Configuration(file);
 		
-		config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr, "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
+		endStr = config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr, "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
 		
+		standID = config.getBlock("stand_ID", standID).getInt();
+		bookID = config.getItem("book_ID", bookID).getInt();
+		
+		decorationID = config.getBlock("decoration_ID", decorationID).getInt();
 		
 		defaultElements = getDefaultElements();
 	}

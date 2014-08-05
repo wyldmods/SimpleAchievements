@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.networking;
+package com.insane.simpleachievements.common.networking;
 
 import java.io.DataInputStream;
 

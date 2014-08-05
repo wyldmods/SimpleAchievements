@@ -1,6 +1,6 @@
-package com.insane.simpleachievements.data;
+package com.insane.simpleachievements.common.data;
 
-import static com.insane.simpleachievements.data.Element.Alignment.LEFT;
+import static com.insane.simpleachievements.common.data.Element.Alignment.LEFT;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.insane.simpleachievements.networking.IByteEncodable;
+import com.insane.simpleachievements.common.networking.IByteEncodable;
 
 public class Element implements IByteEncodable<Element>
 {

@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.data;
+package com.insane.simpleachievements.common.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -10,8 +10,8 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.insane.simpleachievements.config.ConfigHandler;
-import com.insane.simpleachievements.networking.IByteEncodable;
+import com.insane.simpleachievements.common.config.ConfigHandler;
+import com.insane.simpleachievements.common.networking.IByteEncodable;
 
 public class DataHandler implements IByteEncodable<DataHandler>
 {

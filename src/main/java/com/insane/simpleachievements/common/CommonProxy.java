@@ -1,4 +1,4 @@
-package com.insane.simpleachievements;
+package com.insane.simpleachievements.common;
 
 import com.insane.simpleachievements.client.gui.GuiSA;
 
