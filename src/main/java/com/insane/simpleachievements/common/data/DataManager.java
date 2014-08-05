@@ -78,11 +78,14 @@ public class DataManager
 	}
 	
 	@SuppressWarnings("serial")
-	public void initSpecialUsers() throws FileNotFoundException
+	public void initSpecialUsers() throws IOException
 	{
 		URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + "specialUsers.json");
+		
+		if (url == null) return;
+		
 		File file = new File(url.getFile());
-	
+			
 		String s = "";
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine())
