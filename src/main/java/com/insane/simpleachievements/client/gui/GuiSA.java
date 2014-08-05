@@ -14,9 +14,11 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.insane.simpleachievements.SimpleAchievements;
+import com.insane.simpleachievements.common.NBTUtils;
 import com.insane.simpleachievements.common.data.DataHandler;
 import com.insane.simpleachievements.common.data.DataManager;
 import com.insane.simpleachievements.common.data.Element;
+import com.insane.simpleachievements.common.networking.PacketHandlerSA;
 
 public class GuiSA extends GuiScreen
 {
@@ -41,13 +43,51 @@ public class GuiSA extends GuiScreen
     
     private static ResourceLocation bgl = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_left.png");
     private static ResourceLocation bgr = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_right.png");
+    
+    private class ButtonPage extends GuiButton
+    {
+    	private boolean next;
+    	
+    	public ButtonPage(int id, int x, int y, boolean next)
+    	{
+    		super(id, x, y, 21, 21, next ? "next" : "prev");
+    		this.next = next;
+    	}
+    	
+    	@Override
+    	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
+    	{
+            if (this.drawButton)
+            {
+                par1Minecraft.getTextureManager().bindTexture(ButtonElement.texture);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                
+                boolean hover = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
+                this.drawTexturedModalRect(this.xPosition, this.yPosition, next ? 234 : 203, hover ? 211 : 233, this.width, this.height);
+                
+                this.mouseDragged(par1Minecraft, par2, par3);
+            }
+    	}
+    	
+    	@Override
+    	public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3)
+    	{
+    		if (clickDelay <= 0)
+    		{
+    			return super.mousePressed(par1Minecraft, par2, par3);
+    		}
+    		return false;
+    	}
+    }
+    
 	public GuiSA(EntityPlayer player)
 	{
 		super();
 
 		this.mc = Minecraft.getMinecraft();
 		elements = DataManager.instance().getHandlerFor(player.username);
+		page = NBTUtils.getTag(player.getCurrentEquippedItem()).getInteger("sa:page");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +106,11 @@ public class GuiSA extends GuiScreen
 		int baseHeight = 30;
 		int yPos = startYAch;
 		int width = bookWidth / 2 - 60;
+		
+		if (achOffset >= chievs.length)
+		{
+			decrPage();
+		}
 
 		//page 1
 		for (int i = achOffset; i < chievs.length; i++)
@@ -73,7 +118,7 @@ public class GuiSA extends GuiScreen
 			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonElement button = new ButtonElement(i, startX + 25, startY + yPos, width, chievs[i]);
+				ButtonElement button = new ButtonElement(i, startX + 25, startY + yPos, width, chievs[i], this);
 				yPos += button.getHeight();
 				buttonList.add(button);
 			}
@@ -87,14 +132,14 @@ public class GuiSA extends GuiScreen
 			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonElement button = new ButtonElement(i, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[i]);
+				ButtonElement button = new ButtonElement(i, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[i], this);
 				yPos += button.getHeight();
 				buttonList.add(button);
 			}
 		}
 
-		buttonList.add(new GuiButton(chievs.length, this.width - 60, height - 30, 50, 20, "Next"));
-		buttonList.add(new GuiButton(chievs.length + 1, 10, height - 30, 50, 20, "Prev"));
+		buttonList.add(new ButtonPage(chievs.length, startX + bookWidth - 22, startY + bookHeight - 23, true));
+		buttonList.add(new ButtonPage(chievs.length + 1, startX, startY + bookHeight - 23, false));
 	}
 
 	@Override
@@ -133,15 +178,33 @@ public class GuiSA extends GuiScreen
 		{
 			if (button.id == elements.numElements())
 			{
-				page++;
-				initGui();
+				incrPage();
 			}
 			else if (button.id == elements.numElements() + 1)
 			{
-				page = page == 0 ? 0 : page - 1;
-				initGui();
+				decrPage();
 			}
 		}
+	}
+	
+	private void incrPage()
+	{
+		page++;
+		setNBT();
+		initGui();
+	}
+	
+	private void decrPage()
+	{
+		page = page == 0 ? 0 : page - 1;
+		setNBT();
+		initGui();
+	}
+	
+	private void setNBT()
+	{
+		Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem().getTagCompound().setInteger("sa:page", page);
+		PacketHandlerSA.sendPageUpdateToServer(Minecraft.getMinecraft().thePlayer, page);
 	}
 
     @Override

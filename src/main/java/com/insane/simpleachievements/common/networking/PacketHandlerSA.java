@@ -14,8 +14,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.insane.simpleachievements.common.NBTUtils;
 import com.insane.simpleachievements.common.data.DataManager;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -27,6 +29,7 @@ public class PacketHandlerSA implements IPacketHandler
 	
 	public static final byte ID_BYTE_ENCODABLE = 0;
 	public static final byte ID_ACHIEVEMENT_UPDATE = 1;
+	public static final byte ID_PAGE_UDPATE = 2;
 	
 	public static void registerSerializeable(Class<? extends IByteEncodable<?>> clazz)
 	{
@@ -77,8 +80,22 @@ public class PacketHandlerSA implements IPacketHandler
 					e.printStackTrace();
 				}
 				break;
+			case ID_PAGE_UDPATE:
+				packet.data = ArrayUtils.remove(packet.data, 0);
+				
+				bin = new ByteArrayInputStream(packet.data);
+				in = new DataInputStream(bin);
+				
+				try
+				{
+					NBTUtils.getTag(FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[in.readInt()].getPlayerEntityByName(in.readUTF()).getCurrentEquippedItem()).setInteger("sa:page", in.readInt());
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				break;
 			}
-			
 		}
 	}
 
@@ -105,6 +122,26 @@ public class PacketHandlerSA implements IPacketHandler
 			out.writeByte(ID_ACHIEVEMENT_UPDATE);
 			out.writeUTF(player.username);
 			out.writeInt(id);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		sendToServer(bos.toByteArray());
+	}
+	
+	public static void sendPageUpdateToServer(EntityPlayer player, int page)
+	{
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(bos);
+		
+		try
+		{
+			out.writeByte(ID_PAGE_UDPATE);
+			out.writeInt(player.worldObj.provider.dimensionId);
+			out.writeUTF(player.username);
+			out.writeInt(page);
 		}
 		catch (IOException e)
 		{

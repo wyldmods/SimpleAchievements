@@ -18,11 +18,11 @@ import com.insane.simpleachievements.common.data.Element;
 
 public class ButtonElement extends GuiButton
 {
-	private static final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "textures/gui/checkboxes.png");
+	static final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "textures/gui/checkboxes.png");
 
 	private final Element element;
-
-	public ButtonElement(int id, int x, int y, int width, Element ele)
+	
+	public ButtonElement(int id, int x, int y, int width, Element ele, GuiSA parent)
 	{
 		super(id, x, y, width, ele.height, ele.getText());
 
