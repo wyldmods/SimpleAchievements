@@ -107,9 +107,10 @@ public class GuiSA extends GuiScreen
 		int yPos = startYAch;
 		int width = bookWidth / 2 - 60;
 		
-		if (achOffset >= chievs.length)
+		if (achOffset >= chievs.length && page > 0)
 		{
 			decrPage();
+			return;
 		}
 
 		//page 1
