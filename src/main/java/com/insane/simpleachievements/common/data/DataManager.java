@@ -25,14 +25,14 @@ public class DataManager
 	@ForgeSubscribe
 	public void onWorldLoad(WorldEvent.Load load)
 	{
-		if (!load.world.isRemote && !loaded)
+		if (!load.world.isRemote)
 			load();
 	}
 
 	@ForgeSubscribe
 	public void onWorldSave(WorldEvent.Save save)
 	{
-		if (!save.world.isRemote && !saved)
+		if (!save.world.isRemote)
 			save();
 	}
 
@@ -49,8 +49,6 @@ public class DataManager
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
 	
-	private boolean loaded = false, saved = false;
-
 	private DataManager()
 	{
 		map = new HashMap<String, DataHandler>();
@@ -103,9 +101,6 @@ public class DataManager
 
 	public void load()
 	{
-		loaded = true;
-		saved = false;
-		
 		saveDir = new File(DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath() + "/" + SimpleAchievements.MODID);
 		saveDir.mkdirs();
 		saveFile = new File(saveDir.getAbsolutePath() + "/" + "achievements.json");
@@ -131,11 +126,7 @@ public class DataManager
 
 	public void save()
 	{
-		saved = true;
-		loaded = false;
-		
 		saveMap(saveFile, this, this.map);
-		saveMap(SimpleAchievements.divConfig, this, this.formats);
 	}
 
 	public void toggleAchievement(String username, int id)
@@ -211,5 +202,14 @@ public class DataManager
 	{
 		Offset offset = specialUsers.get(username);
 		return offset == null ? defaultOffset : offset;
+	}
+
+	public void flush()
+	{
+		this.map = new HashMap<String, DataHandler>();
+		this.formats = new HashMap<Integer, Formatting>();
+		this.specialUsers = new HashMap<String, Offset>();
+				
+		saveFile.delete();
 	}
 }

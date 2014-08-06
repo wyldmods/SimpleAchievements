@@ -73,7 +73,7 @@ public class PacketHandlerSA implements IPacketHandler
 				
 				try
 				{
-					DataManager.instance().getHandlerFor(in.readUTF()).toggleAchievement(in.readInt());
+					DataManager.instance().getHandlerFor(in.readUTF()).getAchievement(in.readInt()).setState(in.readBoolean());
 				}
 				catch (IOException e)
 				{
@@ -112,7 +112,7 @@ public class PacketHandlerSA implements IPacketHandler
 		sendToClient(player, data);
 	}
 	
-	public static void sendAchUpdateToServer(EntityPlayer player, int id)
+	public static void sendAchUpdateToServer(EntityPlayer player, int id, boolean state)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(bos);
@@ -122,6 +122,7 @@ public class PacketHandlerSA implements IPacketHandler
 			out.writeByte(ID_ACHIEVEMENT_UPDATE);
 			out.writeUTF(player.username);
 			out.writeInt(id);
+			out.writeBoolean(state);
 		}
 		catch (IOException e)
 		{

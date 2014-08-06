@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.insane.simpleachievements.common.BlockAchievementStand;
@@ -17,6 +20,7 @@ import com.insane.simpleachievements.common.ItemAchievementBook;
 import com.insane.simpleachievements.common.ItemBlockAchievementStand;
 import com.insane.simpleachievements.common.PlayerTracker;
 import com.insane.simpleachievements.common.config.ConfigHandler;
+import com.insane.simpleachievements.common.data.CommandFlush;
 import com.insane.simpleachievements.common.data.DataHandler;
 import com.insane.simpleachievements.common.data.DataManager;
 import com.insane.simpleachievements.common.data.Element;
@@ -26,6 +30,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -137,6 +142,13 @@ public class SimpleAchievements
 		);
 
 		proxy.registerRenderers();
+	}
+	
+	@Mod.EventHandler
+	public void onServerStarting(FMLServerStartingEvent event)
+	{
+		ICommandManager server = MinecraftServer.getServer().getCommandManager();
+        ((ServerCommandManager) server).registerCommand(new CommandFlush());
 	}
 
 	private void create(File... files) throws IOException

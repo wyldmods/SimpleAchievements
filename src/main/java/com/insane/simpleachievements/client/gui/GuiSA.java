@@ -173,7 +173,7 @@ public class GuiSA extends GuiScreen
 	{
 		if (button.id < elements.numElements())
 		{
-			elements.toggleAchievement(button.id);
+			toggleAchievement(button.id);
 		}
 		else if (clickDelay == 0)
 		{
@@ -186,6 +186,12 @@ public class GuiSA extends GuiScreen
 				decrPage();
 			}
 		}
+	}
+	
+	private void toggleAchievement(int id)
+	{
+		elements.toggleAchievement(id);
+		PacketHandlerSA.sendAchUpdateToServer(Minecraft.getMinecraft().thePlayer, id, elements.getAchievement(id).getState());
 	}
 	
 	private void incrPage()
