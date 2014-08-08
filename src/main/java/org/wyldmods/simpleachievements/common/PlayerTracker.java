@@ -1,7 +1,7 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
 
-import com.insane.simpleachievements.common.data.DataManager;
-import com.insane.simpleachievements.common.networking.PacketHandlerSA;
+import org.wyldmods.simpleachievements.common.data.DataManager;
+import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;

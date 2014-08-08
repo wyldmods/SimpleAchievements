@@ -1,6 +1,6 @@
-package com.insane.simpleachievements.client.gui;
+package org.wyldmods.simpleachievements.client.gui;
 
-import static com.insane.simpleachievements.SimpleAchievements.bookWidth;
+import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
 
 import java.util.List;
 
@@ -11,10 +11,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
-
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.common.data.DataManager;
-import com.insane.simpleachievements.common.data.Element;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.common.data.DataManager;
+import org.wyldmods.simpleachievements.common.data.Element;
 
 public class ButtonElement extends GuiButton
 {

@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.client.render;
+package org.wyldmods.simpleachievements.client.render;
 
 import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -8,9 +8,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
-
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
 
 public class RenderAchievementBook extends TileEntitySpecialRenderer
 {

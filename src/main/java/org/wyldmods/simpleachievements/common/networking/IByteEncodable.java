@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.networking;
+package org.wyldmods.simpleachievements.common.networking;
 
 import java.io.DataInputStream;
 

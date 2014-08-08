@@ -1,8 +1,21 @@
-package com.insane.simpleachievements;
+package org.wyldmods.simpleachievements;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.wyldmods.simpleachievements.common.BlockAchievementStand;
+import org.wyldmods.simpleachievements.common.CommonProxy;
+import org.wyldmods.simpleachievements.common.ItemAchievementBook;
+import org.wyldmods.simpleachievements.common.ItemBlockAchievementStand;
+import org.wyldmods.simpleachievements.common.PlayerTracker;
+import org.wyldmods.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
+import org.wyldmods.simpleachievements.common.config.ConfigHandler;
+import org.wyldmods.simpleachievements.common.data.CommandFlush;
+import org.wyldmods.simpleachievements.common.data.DataHandler;
+import org.wyldmods.simpleachievements.common.data.DataManager;
+import org.wyldmods.simpleachievements.common.data.Element;
+import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,20 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
-
-import com.insane.simpleachievements.common.BlockAchievementStand;
-import com.insane.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
-import com.insane.simpleachievements.common.CommonProxy;
-import com.insane.simpleachievements.common.ItemAchievementBook;
-import com.insane.simpleachievements.common.ItemBlockAchievementStand;
-import com.insane.simpleachievements.common.PlayerTracker;
-import com.insane.simpleachievements.common.config.ConfigHandler;
-import com.insane.simpleachievements.common.data.CommandFlush;
-import com.insane.simpleachievements.common.data.DataHandler;
-import com.insane.simpleachievements.common.data.DataManager;
-import com.insane.simpleachievements.common.data.Element;
-import com.insane.simpleachievements.common.networking.PacketHandlerSA;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;

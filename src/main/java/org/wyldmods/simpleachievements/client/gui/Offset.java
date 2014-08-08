@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.client.gui;
+package org.wyldmods.simpleachievements.client.gui;
 
 public class Offset
 {

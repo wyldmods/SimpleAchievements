@@ -1,7 +1,7 @@
-package com.insane.simpleachievements.client.gui;
+package org.wyldmods.simpleachievements.client.gui;
 
-import static com.insane.simpleachievements.SimpleAchievements.bookHeight;
-import static com.insane.simpleachievements.SimpleAchievements.bookWidth;
+import static org.wyldmods.simpleachievements.SimpleAchievements.bookHeight;
+import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
 
 import java.util.List;
 
@@ -12,13 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
-
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.common.NBTUtils;
-import com.insane.simpleachievements.common.data.DataHandler;
-import com.insane.simpleachievements.common.data.DataManager;
-import com.insane.simpleachievements.common.data.Element;
-import com.insane.simpleachievements.common.networking.PacketHandlerSA;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.common.NBTUtils;
+import org.wyldmods.simpleachievements.common.data.DataHandler;
+import org.wyldmods.simpleachievements.common.data.DataManager;
+import org.wyldmods.simpleachievements.common.data.Element;
+import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 public class GuiSA extends GuiScreen
 {

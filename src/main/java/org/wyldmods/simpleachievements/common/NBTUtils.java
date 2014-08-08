@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

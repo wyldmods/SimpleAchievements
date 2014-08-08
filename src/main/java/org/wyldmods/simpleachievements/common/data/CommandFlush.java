@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.data;
+package org.wyldmods.simpleachievements.common.data;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandServerKick;

@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.data;
+package org.wyldmods.simpleachievements.common.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.Offset;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -17,8 +20,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.client.gui.Offset;
 
 public class DataManager
 {
@@ -206,9 +207,9 @@ public class DataManager
 
 	public void flush()
 	{
-		this.map = new HashMap<String, DataHandler>();
-		this.formats = new HashMap<Integer, Formatting>();
-		this.specialUsers = new HashMap<String, Offset>();
+		this.map.clear();
+		this.formats.clear();
+		this.specialUsers.clear();
 				
 		saveFile.delete();
 	}

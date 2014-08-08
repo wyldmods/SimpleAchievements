@@ -1,7 +1,7 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
 
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.client.gui.GuiSA;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiSA;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

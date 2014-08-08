@@ -1,6 +1,6 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
 
-import com.insane.simpleachievements.client.gui.GuiSA;
+import org.wyldmods.simpleachievements.client.gui.GuiSA;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;

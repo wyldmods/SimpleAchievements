@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.config;
+package org.wyldmods.simpleachievements.common.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import net.minecraftforge.common.Configuration;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.common.data.DataManager;
+import org.wyldmods.simpleachievements.common.data.Element;
+import org.wyldmods.simpleachievements.common.data.Formatting;
 
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.common.data.DataManager;
-import com.insane.simpleachievements.common.data.Element;
-import com.insane.simpleachievements.common.data.Formatting;
+import net.minecraftforge.common.Configuration;
 
 public class ConfigHandler
 {

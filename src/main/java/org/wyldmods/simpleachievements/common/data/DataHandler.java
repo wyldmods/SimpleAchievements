@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.data;
+package org.wyldmods.simpleachievements.common.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import org.wyldmods.simpleachievements.common.config.ConfigHandler;
+import org.wyldmods.simpleachievements.common.networking.IByteEncodable;
 
-import com.insane.simpleachievements.common.config.ConfigHandler;
-import com.insane.simpleachievements.common.networking.IByteEncodable;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class DataHandler implements IByteEncodable<DataHandler>
 {

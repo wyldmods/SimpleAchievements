@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common.networking;
+package org.wyldmods.simpleachievements.common.networking;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,11 +11,11 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.wyldmods.simpleachievements.common.NBTUtils;
+import org.wyldmods.simpleachievements.common.data.DataManager;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.insane.simpleachievements.common.NBTUtils;
-import com.insane.simpleachievements.common.data.DataManager;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;

@@ -1,4 +1,4 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
 
 import java.util.List;
 

@@ -1,4 +1,7 @@
-package com.insane.simpleachievements.common;
+package org.wyldmods.simpleachievements.common;
+
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiSA;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -11,10 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityEnchantmentTable;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-
-import com.insane.simpleachievements.SimpleAchievements;
-import com.insane.simpleachievements.client.gui.GuiSA;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

@@ -1,6 +1,6 @@
-package com.insane.simpleachievements.common.data;
+package org.wyldmods.simpleachievements.common.data;
 
-import com.insane.simpleachievements.common.data.Element.Alignment;
+import org.wyldmods.simpleachievements.common.data.Element.Alignment;
 
 public class Formatting
 {
