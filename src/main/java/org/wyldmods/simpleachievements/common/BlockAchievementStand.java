@@ -1,10 +1,5 @@
 package org.wyldmods.simpleachievements.common;
 
-import net.minecraft.nbt.NBTTagCompound;
-import org.wyldmods.simpleachievements.SimpleAchievements;
-import org.wyldmods.simpleachievements.client.gui.GuiHelper;
-import org.wyldmods.simpleachievements.client.gui.GuiSA;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,9 +8,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityEnchantmentTable;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiHelper;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -38,21 +36,22 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
+		TileEntityAchievementStand stand = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
 		if (meta == 0)
 		{
 			if (player.isSneaking())
 			{
-                ItemStack bookToAdd = new ItemStack(SimpleAchievements.achievementBook);
-
-				player.inventory.addItemStackToInventory(new ItemStack(SimpleAchievements.achievementBook));
+				ItemStack bookToAdd = new ItemStack(SimpleAchievements.achievementBook);
+				NBTUtils.getTag(bookToAdd).setInteger("sa:page", stand.page);
+				player.inventory.addItemStackToInventory(bookToAdd);
 				world.setBlockMetadataWithNotify(x, y, z, 1, 3);
 			}
 			else
 			{
-				//player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, world, x, y, z);
-                if (world.isRemote) {
-                    GuiHelper.openSAGUI(world, player, x, y, z);
-                }
+				if (world.isRemote)
+				{
+					GuiHelper.openSAGUI(world, player, x, y, z);
+				}
 			}
 			return true;
 		}
@@ -61,8 +60,8 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			ItemStack stack = player.getCurrentEquippedItem();
 			if (stack != null && stack.getItem() == SimpleAchievements.achievementBook)
 			{
-                TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x,y,z);
-                currTable.page=1;
+				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
+				currTable.page = 1;
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				world.setBlockMetadataWithNotify(x, y, z, 0, 3);
 				return true;
