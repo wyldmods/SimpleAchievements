@@ -9,7 +9,7 @@ import org.wyldmods.simpleachievements.common.CommonProxy;
 import org.wyldmods.simpleachievements.common.ItemAchievementBook;
 import org.wyldmods.simpleachievements.common.ItemBlockAchievementStand;
 import org.wyldmods.simpleachievements.common.PlayerTracker;
-import org.wyldmods.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
+import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 import org.wyldmods.simpleachievements.common.data.CommandFlush;
 import org.wyldmods.simpleachievements.common.data.DataHandler;

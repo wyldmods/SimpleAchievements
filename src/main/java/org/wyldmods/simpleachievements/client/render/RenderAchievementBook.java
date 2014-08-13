@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
-import org.wyldmods.simpleachievements.common.BlockAchievementStand.TileEntityAchievementStand;
+import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 
 public class RenderAchievementBook extends TileEntitySpecialRenderer
 {

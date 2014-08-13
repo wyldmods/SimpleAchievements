@@ -1,6 +1,8 @@
 package org.wyldmods.simpleachievements.common;
 
+import net.minecraft.nbt.NBTTagCompound;
 import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiHelper;
 import org.wyldmods.simpleachievements.client.gui.GuiSA;
 
 import net.minecraft.block.Block;
@@ -40,12 +42,17 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 		{
 			if (player.isSneaking())
 			{
+                ItemStack bookToAdd = new ItemStack(SimpleAchievements.achievementBook);
+
 				player.inventory.addItemStackToInventory(new ItemStack(SimpleAchievements.achievementBook));
 				world.setBlockMetadataWithNotify(x, y, z, 1, 3);
 			}
 			else
 			{
-				player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, world, x, y, z);
+				//player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, world, x, y, z);
+                if (world.isRemote) {
+                    GuiHelper.openSAGUI(world, player, x, y, z);
+                }
 			}
 			return true;
 		}
@@ -54,6 +61,8 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			ItemStack stack = player.getCurrentEquippedItem();
 			if (stack != null && stack.getItem() == SimpleAchievements.achievementBook)
 			{
+                TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x,y,z);
+                currTable.page=1;
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				world.setBlockMetadataWithNotify(x, y, z, 0, 3);
 				return true;
@@ -106,10 +115,5 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 	public int getDamageValue(World par1World, int par2, int par3, int par4)
 	{
 		return par1World.getBlockMetadata(par2, par3, par4);
-	}	
-	
-	public static class TileEntityAchievementStand extends TileEntityEnchantmentTable
-	{
-		;
 	}
 }

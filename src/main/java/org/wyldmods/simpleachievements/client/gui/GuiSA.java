@@ -9,11 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.NBTUtils;
+import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 import org.wyldmods.simpleachievements.common.data.DataHandler;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.data.Element;
@@ -82,12 +85,28 @@ public class GuiSA extends GuiScreen
     
 	public GuiSA(EntityPlayer player)
 	{
-		super();
-
-		this.mc = Minecraft.getMinecraft();
-		elements = DataManager.instance().getHandlerFor(player.username);
-		page = NBTUtils.getTag(player.getCurrentEquippedItem()).getInteger("sa:page");
+        NBTTagCompound tag = NBTUtils.getTag(player.getCurrentEquippedItem());
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setInteger("sa:page",1);
+            player.getCurrentEquippedItem().setTagCompound(tag);
+        }
+		//page = NBTUtils.getTag(player.getCurrentEquippedItem()).getInteger("sa:page");
+        new GuiSA(player, NBTUtils.getTag(player.getCurrentEquippedItem()).getInteger("sa:page"));
 	}
+
+    public GuiSA(EntityPlayer player, TileEntityAchievementStand stand) {
+        new GuiSA(player, stand.page);
+    }
+
+    public GuiSA(EntityPlayer player, int par1Page) {
+        super();
+        this.mc = Minecraft.getMinecraft();
+        elements = DataManager.instance().getHandlerFor(player.username);
+        Element[] test = elements.getAchievementArr();
+        page = par1Page;
+        System.out.println("Completion!");
+    }
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -97,7 +116,6 @@ public class GuiSA extends GuiScreen
 
 		clickDelay = 5;
 		buttonList.clear();
-
 		Element[] chievs = elements.getAchievementArr();
 		
 		achOffset = page * entryCount * 2;
@@ -209,6 +227,9 @@ public class GuiSA extends GuiScreen
 	
 	private void setNBT()
 	{
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.thePlayer;
+        ItemStack is = player.getCurrentEquippedItem();
 		Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem().getTagCompound().setInteger("sa:page", page);
 		PacketHandlerSA.sendPageUpdateToServer(Minecraft.getMinecraft().thePlayer, page);
 	}
