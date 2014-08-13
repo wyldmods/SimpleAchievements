@@ -45,7 +45,7 @@ public class SimpleAchievements
 	@Mod.Instance("SimpleAchievements")
 	public static SimpleAchievements instance;
 
-	@SidedProxy(clientSide = "com.wyldmods.simpleachievements.client.ClientProxy", serverSide = "com.wyldmods.simpleachievements.CommonProxy")
+	@SidedProxy(clientSide = "org.wyldmods.simpleachievements.client.ClientProxy", serverSide = "org.wyldmods.simpleachievements.CommonProxy")
 	public static CommonProxy proxy;
 
 	public static File configDir;
