@@ -29,8 +29,7 @@ public class TileEntityAchievementStand extends TileEntityEnchantmentTable {
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
-        System.out.println("[SA]: "+tag.getInteger("sa:page"));
-        return new Packet132TileEntityData(xCoord,yCoord,zCoord, 0, tag);
+        return new Packet132TileEntityData(xCoord,yCoord,zCoord, 1, tag);
     }
 
     @Override
