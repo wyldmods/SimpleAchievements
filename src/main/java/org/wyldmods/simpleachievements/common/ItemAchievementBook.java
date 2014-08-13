@@ -1,6 +1,7 @@
 package org.wyldmods.simpleachievements.common;
 
 import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiHelper;
 import org.wyldmods.simpleachievements.client.gui.GuiSA;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -23,7 +24,10 @@ public class ItemAchievementBook extends Item
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer player)
 	{
-        player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, world, (int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ));
+        //player.openGui(SimpleAchievements.instance, GuiSA.GUI_ID, world, (int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ));
+        if (world.isRemote) {
+            GuiHelper.openSAGUIBook(player);
+        }
         return par1ItemStack;
 	}
 }

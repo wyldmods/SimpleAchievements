@@ -50,6 +50,8 @@ public class GuiSA extends GuiScreen
 
 	private int charHeight = 3;
 
+    private TileEntityAchievementStand stand;
+
 	private static ResourceLocation bgl = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_left.png");
 	private static ResourceLocation bgr = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_right.png");
 
@@ -96,10 +98,11 @@ public class GuiSA extends GuiScreen
 		this.origin = ITEM;
 	}
 
-	public GuiSA(EntityPlayer player, TileEntityAchievementStand stand)
+	public GuiSA(EntityPlayer player, TileEntityAchievementStand par2stand)
 	{
-		this(player, stand.page);
+		this(player, par2stand.page);
 		this.origin = BLOCK;
+        this.stand = par2stand;
 	}
 
 	public GuiSA(EntityPlayer player, int par1Page)
@@ -233,8 +236,9 @@ public class GuiSA extends GuiScreen
 		switch (origin)
 		{
 		case BLOCK:
-			// TODO code here pls
-			System.out.println("NBT NOT SAVED!!"); // remove this when implemented :P
+            stand.page = page;
+            EntityPlayer player2 = mc.thePlayer;
+            PacketHandlerSA.sendTileUpdateToServer(player2, stand.page, stand.xCoord, stand.yCoord, stand.zCoord);
 			break;
 		case ITEM:
 			EntityPlayer player = mc.thePlayer;

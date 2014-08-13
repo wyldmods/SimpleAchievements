@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -42,7 +43,10 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			if (player.isSneaking())
 			{
 				ItemStack bookToAdd = new ItemStack(SimpleAchievements.achievementBook);
-				NBTUtils.getTag(bookToAdd).setInteger("sa:page", stand.page);
+				NBTTagCompound bookTag = NBTUtils.getTag(bookToAdd);
+                bookTag.setInteger("sa:page", stand.page);
+                bookToAdd.setTagCompound(bookTag);
+                System.out.println(bookTag.getInteger("sa:page"));
 				player.inventory.addItemStackToInventory(bookToAdd);
 				world.setBlockMetadataWithNotify(x, y, z, 1, 3);
 			}
@@ -61,7 +65,8 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			if (stack != null && stack.getItem() == SimpleAchievements.achievementBook)
 			{
 				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
-				currTable.page = 1;
+				NBTTagCompound bookTag = NBTUtils.getTag(stack);
+                currTable.page = bookTag.getInteger("sa:page");
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				world.setBlockMetadataWithNotify(x, y, z, 0, 3);
 				return true;
