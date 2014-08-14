@@ -2,8 +2,19 @@ package org.wyldmods.simpleachievements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+
+import org.apache.commons.io.FileUtils;
 import org.wyldmods.simpleachievements.common.BlockAchievementStand;
 import org.wyldmods.simpleachievements.common.CommonProxy;
 import org.wyldmods.simpleachievements.common.ItemAchievementBook;
@@ -17,14 +28,6 @@ import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.data.Element;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ServerCommandManager;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -157,10 +160,16 @@ public class SimpleAchievements
 			if (!file.exists())
 			{
 				file.getParentFile().mkdirs();
-				file.createNewFile();
-				System.out.println(file.getAbsolutePath());
+				copyFromJar(file);
 			}
 		}
+	}
+	
+	private void copyFromJar(File file) throws IOException 
+	{
+		String filename = file.getName();
+        URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + filename);
+        FileUtils.copyURLToFile(url, file);
 	}
 
 	public static int toHex(int r, int g, int b)
