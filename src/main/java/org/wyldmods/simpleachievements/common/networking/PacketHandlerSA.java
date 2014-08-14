@@ -110,7 +110,6 @@ public class PacketHandlerSA implements IPacketHandler
 
 					TileEntity te = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[dim = in.readInt()].getBlockTileEntity(x = in.readInt(), y = in.readInt(), z = in.readInt());
 					int page = in.readInt();
-					System.out.println(page);
 					if (te != null && te instanceof TileEntityAchievementStand)
 					{
 						TileEntityAchievementStand stand = (TileEntityAchievementStand) te;

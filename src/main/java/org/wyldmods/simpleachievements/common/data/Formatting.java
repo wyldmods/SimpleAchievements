@@ -5,15 +5,17 @@ import org.wyldmods.simpleachievements.common.data.Element.Alignment;
 public class Formatting
 {
 	public boolean isAchievement = true;
-	
+
 	public int color = 0x000000, colorChecked = 0x009010;
-	
+
 	public Alignment align = Alignment.LEFT;
-	
+
 	public boolean shadow = false;
-	
-	public Formatting() {}
-	
+
+	public Formatting()
+	{
+	}
+
 	public Formatting(boolean isAchievmenet, int color, int colorChecked, String align, boolean shadow)
 	{
 		this.isAchievement = isAchievmenet;

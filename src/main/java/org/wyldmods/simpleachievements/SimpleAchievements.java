@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -57,11 +58,13 @@ public class SimpleAchievements
 
 	public static Block achievementStand;
 	public static Block decorationBlock;
-	
+
 	public static Item achievementBook;
 
 	public static int bookWidth = 417;
 	public static int bookHeight = 245;
+
+	public static Logger logger = Logger.getLogger("SimpleAchievements");
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -97,60 +100,40 @@ public class SimpleAchievements
 		achievementStand = new BlockAchievementStand(ConfigHandler.standID);
 		GameRegistry.registerBlock(achievementStand, ItemBlockAchievementStand.class, "sa.achievementStand");
 		GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
-		
-		decorationBlock = new Block(ConfigHandler.decorationID, Material.wood).setStepSound(Block.soundWoodFootstep).setHardness(1.5f).setTextureName(MODID.toLowerCase() + ":stand_top").setUnlocalizedName("sa.decorativeWood");
+
+		decorationBlock = new Block(ConfigHandler.decorationID, Material.wood).setStepSound(Block.soundWoodFootstep).setHardness(1.5f).setTextureName(MODID.toLowerCase() + ":stand_top")
+				.setUnlocalizedName("sa.decorativeWood");
 		GameRegistry.registerBlock(decorationBlock, "sa.decorationBlock");
-		
+
 		achievementBook = new ItemAchievementBook(ConfigHandler.bookID);
 		GameRegistry.registerItem(achievementBook, "sa.achievementBook");
-		
-		System.out.println(Item.itemsList[achievementStand.blockID]);
-		
+
 		ItemStack purpleDye = new ItemStack(Item.dyePowder, 1, 5);
-		
-		GameRegistry.addRecipe(new ItemStack(achievementStand),
-			"dbd",
-			"www",
-			"www",
 
-			'd', purpleDye,
-			'b', Item.book,
-			'w', Block.planks
-		);
-		
-		GameRegistry.addRecipe(new ItemStack(achievementStand),
-			" b ",
-			"www",
-			"www",
+		GameRegistry.addRecipe(new ItemStack(achievementStand), "dbd", "www", "www",
 
-			'b', achievementBook,
-			'w', Block.planks
-		);
-		
-		GameRegistry.addRecipe(new ItemStack(achievementBook), 
-			"dbd",
-			
-			'd', purpleDye,
-			'b', Item.book
-		);
-		
-		GameRegistry.addRecipe(new ItemStack(decorationBlock, 5),
-			"www",
-			"wlw",
-			"www",
-			
-			'w', Block.planks,
-			'l', Item.leather
-		);
+		'd', purpleDye, 'b', Item.book, 'w', Block.planks);
+
+		GameRegistry.addRecipe(new ItemStack(achievementStand), " b ", "www", "www",
+
+		'b', achievementBook, 'w', Block.planks);
+
+		GameRegistry.addRecipe(new ItemStack(achievementBook), "dbd",
+
+		'd', purpleDye, 'b', Item.book);
+
+		GameRegistry.addRecipe(new ItemStack(decorationBlock, 5), "www", "wlw", "www",
+
+		'w', Block.planks, 'l', Item.leather);
 
 		proxy.registerRenderers();
 	}
-	
+
 	@Mod.EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 		ICommandManager server = MinecraftServer.getServer().getCommandManager();
-        ((ServerCommandManager) server).registerCommand(new CommandFlush());
+		((ServerCommandManager) server).registerCommand(new CommandFlush());
 	}
 
 	private void create(File... files) throws IOException
@@ -161,15 +144,16 @@ public class SimpleAchievements
 			{
 				file.getParentFile().mkdirs();
 				copyFromJar(file);
+				logger.info("Successfully loaded default file: " + file.getName());
 			}
 		}
 	}
-	
-	private void copyFromJar(File file) throws IOException 
+
+	private void copyFromJar(File file) throws IOException
 	{
 		String filename = file.getName();
-        URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + filename);
-        FileUtils.copyURLToFile(url, file);
+		URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + filename);
+		FileUtils.copyURLToFile(url, file);
 	}
 
 	public static int toHex(int r, int g, int b)

@@ -22,7 +22,7 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.75F, (float) par6 + 0.5F);
-			float f1 = (float) tile.tickCount + par8;
+			float f1 = tile.tickCount + par8;
 			GL11.glTranslatef(0.0F, 0.1F + MathHelper.sin(f1 * 0.1F) * 0.01F, 0.0F);
 			float f2;
 
@@ -42,8 +42,8 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer
 			this.bindTexture(enchantingTableBookTextures);
 			float f4 = tile.pageFlipPrev + (tile.pageFlip - tile.pageFlipPrev) * par8 + 0.25F;
 			float f5 = tile.pageFlipPrev + (tile.pageFlip - tile.pageFlipPrev) * par8 + 0.75F;
-			f4 = (f4 - (float) MathHelper.truncateDoubleToInt((double) f4)) * 1.6F - 0.3F;
-			f5 = (f5 - (float) MathHelper.truncateDoubleToInt((double) f5)) * 1.6F - 0.3F;
+			f4 = (f4 - MathHelper.truncateDoubleToInt(f4)) * 1.6F - 0.3F;
+			f5 = (f5 - MathHelper.truncateDoubleToInt(f5)) * 1.6F - 0.3F;
 
 			if (f4 < 0.0F)
 			{
@@ -72,6 +72,7 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer
 		}
 	}
 
+	@Override
 	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
 	{
 		this.renderTileEntityEnchantmentTableAt((TileEntityAchievementStand) par1TileEntity, par2, par4, par6, par8);

@@ -49,7 +49,7 @@ public class DataManager
 	private Map<String, Offset> specialUsers;
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private File saveDir, saveFile;
-	
+
 	private DataManager()
 	{
 		map = new HashMap<String, DataHandler>();
@@ -67,7 +67,8 @@ public class DataManager
 			s += scan.nextLine() + "\n";
 		}
 
-		formats = gson.fromJson(s, new TypeToken<Map<Integer, Formatting>>(){}.getType());
+		formats = gson.fromJson(s, new TypeToken<Map<Integer, Formatting>>() {
+		}.getType());
 		if (formats == null)
 		{
 			formats = new HashMap<Integer, Formatting>();
@@ -75,24 +76,26 @@ public class DataManager
 		}
 		scan.close();
 	}
-	
+
 	@SuppressWarnings("serial")
 	public void initSpecialUsers() throws IOException
 	{
 		URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + "specialUsers.json");
-		
-		if (url == null) return;
-		
+
+		if (url == null)
+			return;
+
 		File file = new File(url.getFile());
-			
+
 		String s = "";
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine())
 		{
 			s += scan.nextLine() + "\n";
 		}
-		
-		specialUsers = gson.fromJson(s, new TypeToken<Map<String, Offset>>(){}.getType());
+
+		specialUsers = gson.fromJson(s, new TypeToken<Map<String, Offset>>() {
+		}.getType());
 		if (specialUsers == null)
 		{
 			specialUsers = new HashMap<String, Offset>();
@@ -116,7 +119,7 @@ public class DataManager
 			{
 				map = loadMap(saveFile);
 			}
-			
+
 			initSpecialUsers();
 		}
 		catch (IOException e)
@@ -164,7 +167,8 @@ public class DataManager
 		}
 		scan.close();
 
-		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {}.getType());
+		Map<String, DataHandler> ret = gson.fromJson(json, new TypeToken<Map<String, DataHandler>>() {
+		}.getType());
 		return ret == null ? new HashMap<String, DataHandler>() : ret;
 	}
 
@@ -184,7 +188,7 @@ public class DataManager
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			System.out.println("Could not save achievements file!");
+			SimpleAchievements.logger.severe("Could not save achievements file!");
 		}
 	}
 
@@ -192,13 +196,14 @@ public class DataManager
 	{
 		map.put(player.username, handler);
 	}
-	
+
 	public Formatting getFormat(int div)
 	{
 		return formats.get(div);
 	}
 
 	private static final Offset defaultOffset = new Offset(0, 0);
+
 	public Offset getOffsetFor(String username)
 	{
 		Offset offset = specialUsers.get(username);
@@ -210,7 +215,7 @@ public class DataManager
 		this.map.clear();
 		this.formats.clear();
 		this.specialUsers.clear();
-				
+
 		saveFile.delete();
 	}
 }

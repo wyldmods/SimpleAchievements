@@ -23,7 +23,7 @@ public class CommandFlush extends CommandBase
 	public void processCommand(ICommandSender icommandsender, String[] astring)
 	{
 		CommandBase kick = new CommandServerKick();
-		kick.processCommand(icommandsender, new String[] {icommandsender.getCommandSenderName()});
+		kick.processCommand(icommandsender, new String[] { icommandsender.getCommandSenderName() });
 		DataManager.instance().flush();
 	}
 

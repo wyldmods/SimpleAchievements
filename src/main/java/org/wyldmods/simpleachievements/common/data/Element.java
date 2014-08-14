@@ -31,11 +31,13 @@ public class Element implements IByteEncodable<Element>
 	public static final String lineSplit = "|";
 
 	public Alignment align = LEFT;
-	
+
 	public boolean shadow = false;
-	
-	public Element(){}
-	
+
+	public Element()
+	{
+	}
+
 	public Element(String text)
 	{
 		this.text = text;
@@ -114,7 +116,7 @@ public class Element implements IByteEncodable<Element>
 			out.writeInt(colorChecked);
 
 			out.writeInt(align.ordinal());
-			
+
 			out.writeBoolean(shadow);
 		}
 		catch (IOException e)
@@ -140,7 +142,7 @@ public class Element implements IByteEncodable<Element>
 			colorChecked = data.readInt();
 
 			align = Alignment.values()[data.readInt()];
-			
+
 			shadow = data.readBoolean();
 		}
 		catch (IOException e)

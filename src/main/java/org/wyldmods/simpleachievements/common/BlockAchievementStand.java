@@ -44,9 +44,8 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			{
 				ItemStack bookToAdd = new ItemStack(SimpleAchievements.achievementBook);
 				NBTTagCompound bookTag = NBTUtils.getTag(bookToAdd);
-                bookTag.setInteger("sa:page", stand.page);
-                bookToAdd.setTagCompound(bookTag);
-                System.out.println(bookTag.getInteger("sa:page"));
+				bookTag.setInteger("sa:page", stand.page);
+				bookToAdd.setTagCompound(bookTag);
 				player.inventory.addItemStackToInventory(bookToAdd);
 				world.setBlockMetadataWithNotify(x, y, z, 1, 3);
 			}
@@ -66,7 +65,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			{
 				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
 				NBTTagCompound bookTag = NBTUtils.getTag(stack);
-                currTable.page = bookTag.getInteger("sa:page");
+				currTable.page = bookTag.getInteger("sa:page");
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				world.setBlockMetadataWithNotify(x, y, z, 0, 3);
 				return true;

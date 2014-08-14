@@ -19,13 +19,14 @@ public class ItemAchievementBook extends Item
 		setTextureName(SimpleAchievements.MODID + ":book");
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer player)
 	{
-        if (world.isRemote) {
-            GuiHelper.openSAGUIBook(player);
-        }
-        return par1ItemStack;
+		if (world.isRemote)
+		{
+			GuiHelper.openSAGUIBook(player);
+		}
+		return par1ItemStack;
 	}
 }

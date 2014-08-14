@@ -16,28 +16,28 @@ import net.minecraftforge.common.Configuration;
 public class ConfigHandler
 {
 	public static String endStr = "::";
-	
+
 	public static List<Element> defaultElements;
-	
+
 	public static int standID = 500;
 	public static int decorationID = 501;
-	
+
 	public static int bookID = 5000;
-	
+
 	public static void init(File file)
 	{
 		Configuration config = new Configuration(file);
-		
+
 		endStr = config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr, "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
-		
+
 		standID = config.getBlock("stand_ID", standID).getInt();
 		bookID = config.getItem("book_ID", bookID).getInt();
-		
+
 		decorationID = config.getBlock("decoration_ID", decorationID).getInt();
-		
+
 		defaultElements = getDefaultElements();
 	}
-	
+
 	public static List<Element> getDefaultElements()
 	{
 		try
@@ -55,9 +55,9 @@ public class ConfigHandler
 				}
 				Element ele = new Element(args[0]);
 				Formatting div = DataManager.instance().getFormat(Integer.parseInt(args[1]));
-				
+
 				div.applyTo(ele);
-				
+
 				ret.add(ele);
 			}
 

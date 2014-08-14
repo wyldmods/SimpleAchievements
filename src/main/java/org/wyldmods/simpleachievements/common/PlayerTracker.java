@@ -12,10 +12,11 @@ public class PlayerTracker implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-	    if (player!=null && !player.worldObj.isRemote) {
-            DataManager.instance().checkMap(player.username);
-            PacketHandlerSA.sendToClient((Player) player, DataManager.instance().getHandlerFor(player.username));
-        }
+		if (player != null && !player.worldObj.isRemote)
+		{
+			DataManager.instance().checkMap(player.username);
+			PacketHandlerSA.sendToClient((Player) player, DataManager.instance().getHandlerFor(player.username));
+		}
 	}
 
 	@Override

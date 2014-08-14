@@ -20,7 +20,7 @@ public class ButtonElement extends GuiButton
 	static final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "textures/gui/checkboxes.png");
 
 	private final Element element;
-	
+
 	public ButtonElement(int id, int x, int y, int width, Element ele, GuiSA parent)
 	{
 		super(id, x, y, width, ele.height, ele.getText());
@@ -70,19 +70,19 @@ public class ButtonElement extends GuiButton
 			for (int i = 0; i < lines.size(); i++)
 			{
 				String s = lines.get(i);
-				fnt.drawString(s, xPosition + getIconOffset() + (bookWidth / 4) - 20 - (fnt.getStringWidth(s) / 2), (int) (yPosition + (height / 2) - lineNum * 4) + i * 8,
+				fnt.drawString(s, xPosition + getIconOffset() + (bookWidth / 4) - 20 - (fnt.getStringWidth(s) / 2), yPosition + (height / 2) - lineNum * 4 + i * 8,
 						element.getColorBasedOnState(), element.shadow);
 			}
 			break;
 		case LEFT:
-			fnt.drawSplitString(element.getText(), xPosition + getIconOffset(), (int) (yPosition + (height / 2) - lineNum * 4), this.width, element.getColorBasedOnState());
+			fnt.drawSplitString(element.getText(), xPosition + getIconOffset(), yPosition + (height / 2) - lineNum * 4, this.width, element.getColorBasedOnState());
 			break;
 		case RIGHT:
 			lines = fnt.listFormattedStringToWidth(element.getText(), this.width);
 			for (int i = 0; i < lines.size(); i++)
 			{
 				String s = lines.get(i);
-				fnt.drawString(s, xPosition + 25 + this.width - fnt.getStringWidth(s), (int) (yPosition + (height / 2) - lineNum * 4) + i * 8, element.getColorBasedOnState(), element.shadow);
+				fnt.drawString(s, xPosition + 25 + this.width - fnt.getStringWidth(s), yPosition + (height / 2) - lineNum * 4 + i * 8, element.getColorBasedOnState(), element.shadow);
 			}
 			break;
 		}
@@ -97,7 +97,7 @@ public class ButtonElement extends GuiButton
 	{
 		return this.height;
 	}
-	
+
 	// don't allow the element to be clickable if not an achievement
 	@Override
 	public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3)

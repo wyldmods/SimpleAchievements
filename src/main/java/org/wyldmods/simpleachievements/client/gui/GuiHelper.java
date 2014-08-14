@@ -6,12 +6,15 @@ import net.minecraft.world.World;
 
 import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 
-public class GuiHelper {
-    public static void openSAGUI(World world, EntityPlayer player, int x, int y, int z) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiSA(player, (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z)));
-    }
+public class GuiHelper
+{
+	public static void openSAGUI(World world, EntityPlayer player, int x, int y, int z)
+	{
+		Minecraft.getMinecraft().displayGuiScreen(new GuiSA(player, (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z)));
+	}
 
-    public static void openSAGUIBook(EntityPlayer player) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiSA(player));
-    }
+	public static void openSAGUIBook(EntityPlayer player)
+	{
+		Minecraft.getMinecraft().displayGuiScreen(new GuiSA(player));
+	}
 }
