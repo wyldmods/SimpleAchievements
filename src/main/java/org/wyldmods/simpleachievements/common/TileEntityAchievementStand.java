@@ -6,9 +6,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntityEnchantmentTable;
 
-/**
- * Created by Michael on 13/08/2014.
- */
 public class TileEntityAchievementStand extends TileEntityEnchantmentTable {
 
     public int page;
@@ -21,7 +18,7 @@ public class TileEntityAchievementStand extends TileEntityEnchantmentTable {
 
     @Override
     public void readFromNBT(NBTTagCompound par1) {
-        par1.getInteger("sa:page");
+        page = par1.getInteger("sa:page");
         super.readFromNBT(par1);
     }
 
