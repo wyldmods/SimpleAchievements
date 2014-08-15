@@ -23,6 +23,8 @@ import com.google.gson.GsonBuilder;
 
 public class DataManager
 {
+	private static boolean noSave = false;
+
 	@ForgeSubscribe
 	public void onWorldLoad(WorldEvent.Load load)
 	{
@@ -105,6 +107,8 @@ public class DataManager
 
 	public void load()
 	{
+		noSave = false;
+
 		saveDir = new File(DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath() + "/" + SimpleAchievements.MODID);
 		saveDir.mkdirs();
 		saveFile = new File(saveDir.getAbsolutePath() + "/" + "achievements.json");
@@ -130,7 +134,10 @@ public class DataManager
 
 	public void save()
 	{
-		saveMap(saveFile, this, this.map);
+		if (!noSave)
+		{
+			saveMap(saveFile, this, this.map);
+		}
 	}
 
 	public void toggleAchievement(String username, int id)
@@ -212,6 +219,8 @@ public class DataManager
 
 	public void flush()
 	{
+		noSave = true;
+
 		this.map.clear();
 		this.formats.clear();
 		this.specialUsers.clear();
