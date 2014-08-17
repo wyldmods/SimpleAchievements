@@ -6,9 +6,7 @@ import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.BLOCK;
 import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.ITEM;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -49,14 +47,11 @@ public class GuiSA extends GuiScreen
 	private int startYAch = 15;
 
 	/**
-	 * Page -> Start Index
-	 * <p>
-	 * A map to store all the start indeces of pages. Much better than the old
-	 * system...trust me.
+	 * A list of all page start indexes (index in the list == page number)
 	 */
-	private Map<Integer, Integer> pageMap;
+	private List<Integer> pages;
 
-	private int charHeight = 3;
+	private int charHeight = 8;
 
 	private TileEntityAchievementStand stand;
 
@@ -127,33 +122,49 @@ public class GuiSA extends GuiScreen
 	{
 		super.initGui();
 
-		if (pageMap == null)
+		if (pages == null)
 		{
-			buildPageMap();
+			initPages();
 		}
 
 		clickDelay = 5;
 		buttonList.clear();
 
-		int idx = pageMap.get(page);
+		int idx = getIndex();
 		getNextButtons(idx, buttonList);
 
 		buttonList.add(new ButtonPage(elements.numElements(), startX + bookWidth - 22, startY + bookHeight - 23, true));
 		buttonList.add(new ButtonPage(elements.numElements() + 1, startX, startY + bookHeight - 23, false));
 	}
+	
+	private int getIndex()
+	{
+		if (page >= pages.size())
+		{
+			page--;
+			return getIndex();
+		}
+		else if (page < 0)
+		{
+			page = 0;
+			return getIndex();
+		}
+		else
+		{
+			return pages.get(page);
+		}
+	}
 
-	private void buildPageMap()
+	private void initPages()
 	{
 		List<ButtonElement> mockList = new ArrayList<ButtonElement>();
-		pageMap = new HashMap<Integer, Integer>();
+		pages = new ArrayList<Integer>();
 
 		int idx = 0;
-		int page = 0;
 		while (idx < elements.numElements())
 		{
-			pageMap.put(page, idx);
+			pages.add(idx);
 			idx = getNextButtons(idx, mockList);
-			page++;
 		}
 	}
 
@@ -168,7 +179,7 @@ public class GuiSA extends GuiScreen
 		for (; startIndex < chievs.length; startIndex++)
 		{
 			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[startIndex], width) * charHeight);
-			if (yPos < bookHeight - height - 10)
+			if (yPos < bookHeight - height)
 			{
 				ButtonElement button = new ButtonElement(startIndex, startX + 25, startY + yPos, width, chievs[startIndex], this);
 				yPos += button.getHeight();
@@ -186,7 +197,7 @@ public class GuiSA extends GuiScreen
 		for (; startIndex < chievs.length; startIndex++)
 		{
 			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[startIndex], width) * charHeight);
-			if (yPos < bookHeight - height - 10)
+			if (yPos < bookHeight - height)
 			{
 				ButtonElement button = new ButtonElement(startIndex, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[startIndex], this);
 				yPos += button.getHeight();
