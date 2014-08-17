@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.client.gui.Offset;
+import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
@@ -226,5 +227,7 @@ public class DataManager
 		this.specialUsers.clear();
 
 		saveFile.delete();
+		
+		ConfigHandler.flush();
 	}
 }

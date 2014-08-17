@@ -5,7 +5,10 @@ import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
 import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.BLOCK;
 import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.ITEM;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -39,14 +42,19 @@ public class GuiSA extends GuiScreen
 	private DataHandler elements;
 
 	private int page;
-	private int entryCount;
 
 	private int startX;
 	private int startY = 2;
 
 	private int startYAch = 15;
 
-	private int achOffset = 0;
+	/**
+	 * Page -> Start Index
+	 * <p>
+	 * A map to store all the start indeces of pages. Much better than the old
+	 * system...trust me.
+	 */
+	private Map<Integer, Integer> pageMap;
 
 	private int charHeight = 3;
 
@@ -119,50 +127,78 @@ public class GuiSA extends GuiScreen
 	{
 		super.initGui();
 
+		if (pageMap == null)
+		{
+			buildPageMap();
+		}
+
 		clickDelay = 5;
 		buttonList.clear();
-		Element[] chievs = elements.getAchievementArr();
 
-		achOffset = page * entryCount * 2;
+		int idx = pageMap.get(page);
+		getNextButtons(idx, buttonList);
 
+		buttonList.add(new ButtonPage(elements.numElements(), startX + bookWidth - 22, startY + bookHeight - 23, true));
+		buttonList.add(new ButtonPage(elements.numElements() + 1, startX, startY + bookHeight - 23, false));
+	}
+
+	private void buildPageMap()
+	{
+		List<ButtonElement> mockList = new ArrayList<ButtonElement>();
+		pageMap = new HashMap<Integer, Integer>();
+
+		int idx = 0;
+		int page = 0;
+		while (idx < elements.numElements())
+		{
+			pageMap.put(page, idx);
+			idx = getNextButtons(idx, mockList);
+			page++;
+		}
+	}
+
+	private int getNextButtons(int startIndex, List<ButtonElement> buttons)
+	{
 		int baseHeight = 30;
 		int yPos = startYAch;
 		int width = bookWidth / 2 - 60;
-
-		if (achOffset >= chievs.length && page > 0)
-		{
-			decrPage();
-			return;
-		}
+		Element[] chievs = elements.getAchievementArr();
 
 		// page 1
-		for (int i = achOffset; i < chievs.length; i++)
+		for (; startIndex < chievs.length; startIndex++)
 		{
-			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
+			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[startIndex], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonElement button = new ButtonElement(i, startX + 25, startY + yPos, width, chievs[i], this);
+				ButtonElement button = new ButtonElement(startIndex, startX + 25, startY + yPos, width, chievs[startIndex], this);
 				yPos += button.getHeight();
-				buttonList.add(button);
+				buttons.add(button);
+			}
+			else
+			{
+				break;
 			}
 		}
 
 		yPos = startYAch;
 
 		// page 2
-		for (int i = achOffset + entryCount; i < chievs.length; i++)
+		for (; startIndex < chievs.length; startIndex++)
 		{
-			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[i], width) * charHeight);
+			int height = baseHeight + (ButtonElement.getExpectedLines(chievs[startIndex], width) * charHeight);
 			if (yPos < bookHeight - height - 10)
 			{
-				ButtonElement button = new ButtonElement(i, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[i], this);
+				ButtonElement button = new ButtonElement(startIndex, startX + 10 + (bookWidth / 2), startY + yPos, width, chievs[startIndex], this);
 				yPos += button.getHeight();
-				buttonList.add(button);
+				buttons.add(button);
+			}
+			else
+			{
+				break;
 			}
 		}
 
-		buttonList.add(new ButtonPage(chievs.length, startX + bookWidth - 22, startY + bookHeight - 23, true));
-		buttonList.add(new ButtonPage(chievs.length + 1, startX, startY + bookHeight - 23, false));
+		return startIndex;
 	}
 
 	@Override
@@ -256,38 +292,11 @@ public class GuiSA extends GuiScreen
 		this.height = par3;
 		this.buttonList.clear();
 		this.initGui();
-		this.entryCount = calculateNumberOfEntries();
-		this.initGui();
 	}
 
 	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	private int calculateNumberOfEntries()
-	{
-
-		int len = 0;
-		int count = 0;
-		for (GuiButton button : (List<GuiButton>) buttonList)
-		{
-			if (button instanceof ButtonElement)
-			{
-				count++;
-
-				int height = ((ButtonElement) button).getHeight();
-
-				len += height;
-
-				if (len > bookHeight - height - startYAch - 10)
-				{
-					return count;
-				}
-			}
-		}
-		return count;
 	}
 }

@@ -70,4 +70,9 @@ public class ConfigHandler
 			return null;
 		}
 	}
+
+	public static void flush()
+	{
+		defaultElements = getDefaultElements();
+	}
 }
