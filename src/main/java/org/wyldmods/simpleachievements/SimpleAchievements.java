@@ -38,7 +38,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0")
+@Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0.0")
 @NetworkMod(clientSideRequired = true, channels = PacketHandlerSA.CHANNEL, packetHandler = PacketHandlerSA.class)
 public class SimpleAchievements
 {
