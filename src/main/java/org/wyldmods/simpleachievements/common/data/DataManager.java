@@ -4,19 +4,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import org.wyldmods.simpleachievements.SimpleAchievements;
-import org.wyldmods.simpleachievements.client.gui.Offset;
-import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
+
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.Offset;
+import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -83,15 +82,8 @@ public class DataManager
 	@SuppressWarnings("serial")
 	public void initSpecialUsers() throws IOException
 	{
-		URL url = SimpleAchievements.class.getResource("/assets/simpleachievements/misc/" + "specialUsers.json");
-
-		if (url == null)
-			return;
-
-		File file = new File(url.getFile());
-
 		String s = "";
-		Scanner scan = new Scanner(file);
+		Scanner scan = new Scanner(SimpleAchievements.usersConfig);
 		while (scan.hasNextLine())
 		{
 			s += scan.nextLine() + "\n";

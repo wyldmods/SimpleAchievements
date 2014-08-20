@@ -1,0 +1,35 @@
+{
+  "Bacon_Donut": {
+	  "x":1,
+	  "y":0
+  },
+  "wyld": {
+	  "x":2,
+	  "y":0
+  },
+  "KiwiFails": {
+	  "x":3,
+	  "y":0
+  },
+  "DethridgeCraft": {
+	  "x":4,
+	  "y":0
+  },
+  "crustymustard": {
+	  "x":5,
+	  "y":0
+  },
+  "GiantWaffle": {
+	  "x":0,
+	  "y":1
+  },
+  "Siyliss": {
+	  "x":1,
+	  "y":1
+  },
+  "sevadus": {
+	  "x":2,
+	  "y":1
+  }
+}
+	
