@@ -9,8 +9,10 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.wyldmods.simpleachievements.common.NBTUtils;
 import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
@@ -19,7 +21,6 @@ import org.wyldmods.simpleachievements.common.data.DataManager;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -91,8 +92,7 @@ public class PacketHandlerSA implements IPacketHandler
 
 				try
 				{
-					NBTUtils.getTag(FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[in.readInt()].getPlayerEntityByName(in.readUTF()).getCurrentEquippedItem()).setInteger(
-							"sa:page", in.readInt());
+					NBTUtils.getTag(MinecraftServer.getServer().worldServerForDimension(in.readInt()).getPlayerEntityByName(in.readUTF()).getCurrentEquippedItem()).setInteger("sa:page", in.readInt());
 				}
 				catch (IOException e)
 				{
@@ -106,15 +106,15 @@ public class PacketHandlerSA implements IPacketHandler
 				in = new DataInputStream(bin);
 				try
 				{
-					int x, y, z, dim;
+					int x = in.readInt(), y = in.readInt(), z = in.readInt(), dim = in.readInt(), page = in.readInt();
+					WorldServer world = MinecraftServer.getServer().worldServerForDimension(dim);
 
-					TileEntity te = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[dim = in.readInt()].getBlockTileEntity(x = in.readInt(), y = in.readInt(), z = in.readInt());
-					int page = in.readInt();
+					TileEntity te = world.getBlockTileEntity(x, y, z);
 					if (te != null && te instanceof TileEntityAchievementStand)
 					{
 						TileEntityAchievementStand stand = (TileEntityAchievementStand) te;
 						stand.page = page;
-						FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[dim].markBlockForUpdate(x, y, z);
+						world.markBlockForUpdate(x, y, z);
 					}
 				}
 				catch (IOException e)
@@ -190,10 +190,10 @@ public class PacketHandlerSA implements IPacketHandler
 		try
 		{
 			out.writeByte(ID_TILE_UPDATE);
-			out.writeInt(player.worldObj.provider.dimensionId);
 			out.writeInt(x);
 			out.writeInt(y);
 			out.writeInt(z);
+			out.writeInt(player.worldObj.provider.dimensionId);
 			out.writeInt(page);
 		}
 		catch (IOException e)
