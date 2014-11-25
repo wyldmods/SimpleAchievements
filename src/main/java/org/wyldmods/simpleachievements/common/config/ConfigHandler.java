@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import net.minecraftforge.common.config.Configuration;
+
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.data.Element;
 import org.wyldmods.simpleachievements.common.data.Formatting;
-
-import net.minecraftforge.common.Configuration;
 
 public class ConfigHandler
 {
@@ -29,11 +29,6 @@ public class ConfigHandler
 		Configuration config = new Configuration(file);
 
 		endStr = config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr, "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
-
-		standID = config.getBlock("stand_ID", standID).getInt();
-		bookID = config.getItem("book_ID", bookID).getInt();
-
-		decorationID = config.getBlock("decoration_ID", decorationID).getInt();
 
 		defaultElements = getDefaultElements();
 	}

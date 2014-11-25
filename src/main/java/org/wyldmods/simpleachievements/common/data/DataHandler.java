@@ -1,19 +1,11 @@
 package org.wyldmods.simpleachievements.common.data;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
-import org.wyldmods.simpleachievements.common.networking.IByteEncodable;
 
-import net.minecraft.entity.player.EntityPlayer;
-
-public class DataHandler implements IByteEncodable<DataHandler>
+public class DataHandler
 {
 	private Element[] elements;
 
@@ -69,49 +61,5 @@ public class DataHandler implements IByteEncodable<DataHandler>
 	public int numElements()
 	{
 		return elements.length;
-	}
-
-	@Override
-	public byte[] encode()
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-		DataOutputStream outputStream = new DataOutputStream(bos);
-		try
-		{
-			for (IByteEncodable<Element> ele : elements)
-			{
-				outputStream.write(ele.encode());
-			}
-		}
-		catch (IOException error)
-		{
-			error.printStackTrace();
-		}
-
-		return bos.toByteArray();
-	}
-
-	@Override
-	public DataHandler decode(DataInputStream dis, EntityPlayer player)
-	{
-		ArrayList<Element> newElements = new ArrayList<Element>();
-
-		try
-		{
-			while (dis.available() > 0)
-			{
-				newElements.add(new Element().decode(dis, player));
-			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		this.elements = newElements.toArray(new Element[] {});
-
-		DataManager.instance().changeMap(player, this);
-
-		return this;
 	}
 }

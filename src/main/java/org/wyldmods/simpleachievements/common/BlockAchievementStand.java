@@ -3,13 +3,13 @@ package org.wyldmods.simpleachievements.common;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import org.wyldmods.simpleachievements.SimpleAchievements;
@@ -21,15 +21,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockAchievementStand extends Block implements ITileEntityProvider
 {
 	@SideOnly(Side.CLIENT)
-	private Icon bottom, top;
+	private IIcon bottom, top;
 
-	public BlockAchievementStand(int par1)
+	public BlockAchievementStand()
 	{
-		super(par1, Material.wood);
-		this.setUnlocalizedName("sa.achievementTable");
+		super(Material.wood);
+		this.setBlockName("sa.achievementTable");
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
 		setHardness(1.5f);
-		setStepSound(soundWoodFootstep);
+		setStepSound(soundTypeWood);
 		setCreativeTab(CreativeTabs.tabMisc);
 	}
 
@@ -37,7 +37,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		TileEntityAchievementStand stand = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
+		TileEntityAchievementStand stand = (TileEntityAchievementStand) world.getTileEntity(x, y, z);
 		if (meta == 0)
 		{
 			if (player.isSneaking())
@@ -63,7 +63,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 			ItemStack stack = player.getCurrentEquippedItem();
 			if (stack != null && stack.getItem() == SimpleAchievements.achievementBook)
 			{
-				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getBlockTileEntity(x, y, z);
+				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getTileEntity(x, y, z);
 				NBTTagCompound bookTag = NBTUtils.getTag(stack);
 				currTable.page = bookTag.getInteger("sa:page");
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
@@ -76,7 +76,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		this.blockIcon = register.registerIcon(SimpleAchievements.MODID + ":" + "stand_side");
 		this.bottom = register.registerIcon(SimpleAchievements.MODID + ":" + "stand_bottom");
@@ -85,7 +85,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public Icon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		return side > 1 ? this.blockIcon : side == 1 ? top : bottom;
 	}
@@ -103,7 +103,7 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int metadata)
 	{
 		return new TileEntityAchievementStand();
 	}

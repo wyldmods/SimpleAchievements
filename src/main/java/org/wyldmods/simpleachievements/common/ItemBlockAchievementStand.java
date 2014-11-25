@@ -2,16 +2,18 @@ package org.wyldmods.simpleachievements.common;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class ItemBlockAchievementStand extends ItemBlock
 {
-	public ItemBlockAchievementStand(int par1)
+	public ItemBlockAchievementStand(Block block)
 	{
-		super(par1);
+		super(block);
 		setHasSubtypes(true);
 		setCreativeTab(CreativeTabs.tabMisc);
 	}
@@ -24,7 +26,7 @@ public class ItemBlockAchievementStand extends ItemBlock
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List)
 	{
 		par3List.add(new ItemStack(this, 1, 0));
 		par3List.add(new ItemStack(this, 1, 1));

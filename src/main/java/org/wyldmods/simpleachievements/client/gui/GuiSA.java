@@ -1,9 +1,7 @@
 package org.wyldmods.simpleachievements.client.gui;
 
-import static org.wyldmods.simpleachievements.SimpleAchievements.bookHeight;
-import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
-import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.BLOCK;
-import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.ITEM;
+import static org.wyldmods.simpleachievements.SimpleAchievements.*;
+import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +19,7 @@ import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 import org.wyldmods.simpleachievements.common.data.DataHandler;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.data.Element;
+import org.wyldmods.simpleachievements.common.networking.MessageAchievement;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 public class GuiSA extends GuiScreen
@@ -71,7 +70,7 @@ public class GuiSA extends GuiScreen
 		@Override
 		public void drawButton(Minecraft par1Minecraft, int par2, int par3)
 		{
-			if (this.drawButton)
+			if (this.visible)
 			{
 				par1Minecraft.getTextureManager().bindTexture(ButtonElement.texture);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -112,7 +111,7 @@ public class GuiSA extends GuiScreen
 	{
 		super();
 		this.mc = Minecraft.getMinecraft();
-		elements = DataManager.instance().getHandlerFor(player.username);
+		elements = DataManager.instance().getHandlerFor(player.getCommandSenderName());
 		page = par1Page;
 	}
 
@@ -260,7 +259,7 @@ public class GuiSA extends GuiScreen
 	private void toggleAchievement(int id)
 	{
 		elements.toggleAchievement(id);
-		PacketHandlerSA.sendAchUpdateToServer(Minecraft.getMinecraft().thePlayer, id, elements.getAchievement(id).getState());
+		PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(id, elements.getAchievementState(id)));
 	}
 
 	private void incrPage()
@@ -283,13 +282,12 @@ public class GuiSA extends GuiScreen
 		{
 		case BLOCK:
 			stand.page = page;
-			EntityPlayer player2 = mc.thePlayer;
-			PacketHandlerSA.sendTileUpdateToServer(player2, stand.page, stand.xCoord, stand.yCoord, stand.zCoord);
+			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(stand.page, stand.xCoord, stand.yCoord, stand.zCoord));
 			break;
 		case ITEM:
 			EntityPlayer player = mc.thePlayer;
-			player.getCurrentEquippedItem().getTagCompound().setInteger("sa:page", page);
-			PacketHandlerSA.sendPageUpdateToServer(player, page);
+			NBTUtils.getTag(player.getCurrentEquippedItem()).setInteger("sa:page", page);
+			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(page));
 			break;
 		}
 	}
@@ -298,7 +296,7 @@ public class GuiSA extends GuiScreen
 	public void setWorldAndResolution(Minecraft par1Minecraft, int par2, int par3)
 	{
 		this.mc = par1Minecraft;
-		this.fontRenderer = par1Minecraft.fontRenderer;
+		this.fontRendererObj = par1Minecraft.fontRenderer;
 		this.width = par2;
 		this.height = par3;
 		this.buttonList.clear();

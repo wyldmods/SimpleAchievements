@@ -1,9 +1,9 @@
 package org.wyldmods.simpleachievements.common;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntityEnchantmentTable;
 
 public class TileEntityAchievementStand extends TileEntityEnchantmentTable
@@ -30,13 +30,13 @@ public class TileEntityAchievementStand extends TileEntityEnchantmentTable
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
-		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
 	}
 
 	@Override
-	public void onDataPacket(INetworkManager networkManager, Packet132TileEntityData packet)
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
-		readFromNBT(packet.data);
+		readFromNBT(pkt.func_148857_g());
 	}
 
 	public void setPage(int par1)

@@ -11,9 +11,9 @@ import org.wyldmods.simpleachievements.client.gui.GuiHelper;
 
 public class ItemAchievementBook extends Item
 {
-	public ItemAchievementBook(int id)
+	public ItemAchievementBook()
 	{
-		super(id);
+		super();
 		setCreativeTab(CreativeTabs.tabMisc);
 		setUnlocalizedName("sa.achievementBook");
 		setTextureName(SimpleAchievements.MODID + ":book");

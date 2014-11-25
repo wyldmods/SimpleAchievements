@@ -1,17 +1,8 @@
 package org.wyldmods.simpleachievements.common.data;
 
-import static org.wyldmods.simpleachievements.common.data.Element.Alignment.LEFT;
+import static org.wyldmods.simpleachievements.common.data.Element.Alignment.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-import org.wyldmods.simpleachievements.common.networking.IByteEncodable;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-public class Element implements IByteEncodable<Element>
+public class Element
 {
 	public enum Alignment
 	{
@@ -96,60 +87,5 @@ public class Element implements IByteEncodable<Element>
 	public int getColorBasedOnState()
 	{
 		return getState() ? colorChecked : color;
-	}
-
-	@Override
-	public byte[] encode()
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-		DataOutputStream out = new DataOutputStream(bos);
-
-		try
-		{
-			out.writeUTF(text);
-			out.writeBoolean(state);
-
-			out.writeBoolean(isAchievement);
-
-			out.writeInt(color);
-			out.writeInt(height);
-			out.writeInt(colorChecked);
-
-			out.writeInt(align.ordinal());
-
-			out.writeBoolean(shadow);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		return bos.toByteArray();
-	}
-
-	@Override
-	public Element decode(DataInputStream data, EntityPlayer player)
-	{
-		try
-		{
-			text = data.readUTF();
-			state = data.readBoolean();
-
-			isAchievement = data.readBoolean();
-
-			color = data.readInt();
-			height = data.readInt();
-			colorChecked = data.readInt();
-
-			align = Alignment.values()[data.readInt()];
-
-			shadow = data.readBoolean();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		return this;
 	}
 }

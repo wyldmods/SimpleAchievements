@@ -116,6 +116,6 @@ public class ButtonElement extends GuiButton
 
 	private static Offset getOffsetForPlayer(EntityPlayer player)
 	{
-		return DataManager.instance().getOffsetFor(player.username);
+		return DataManager.instance().getOffsetFor(player.getCommandSenderName());
 	}
 }

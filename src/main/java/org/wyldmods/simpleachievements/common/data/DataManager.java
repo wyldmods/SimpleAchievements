@@ -9,34 +9,53 @@ import java.util.Map;
 import java.util.Scanner;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.client.gui.Offset;
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
+import org.wyldmods.simpleachievements.common.networking.MessageSendAchievements;
+import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
+
+import tterrag.core.common.Handlers.Handler;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+
+@Handler
 public class DataManager
 {
 	private static boolean noSave = false;
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load load)
 	{
 		if (!load.world.isRemote)
 			load();
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onWorldSave(WorldEvent.Save save)
 	{
 		if (!save.world.isRemote)
 			save();
+	}
+	
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerLoggedInEvent event)
+    {
+        EntityPlayer player = event.player;
+        if (player != null && !player.worldObj.isRemote)
+        {
+            DataManager.instance().checkMap(player.getCommandSenderName());
+            PacketHandlerSA.INSTANCE.sendTo(new MessageSendAchievements(this.getHandlerFor(player.getCommandSenderName()).getAchievementList()), (EntityPlayerMP) player);
+        }
 	}
 
 	private static DataManager instance = new DataManager();
@@ -194,7 +213,7 @@ public class DataManager
 
 	public void changeMap(EntityPlayer player, DataHandler handler)
 	{
-		map.put(player.username, handler);
+		map.put(player.getCommandSenderName(), handler);
 	}
 
 	public Formatting getFormat(int div)

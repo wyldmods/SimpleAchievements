@@ -1,272 +1,31 @@
 package org.wyldmods.simpleachievements.common.networking;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.wyldmods.simpleachievements.common.NBTUtils;
-import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.common.data.DataHandler;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-
-public class PacketHandlerSA implements IPacketHandler
+public class PacketHandlerSA implements IMessageHandler<MessageSendAchievements, IMessage>
 {
-	private static BiMap<Byte, Class<? extends IByteEncodable<?>>> packetIdentifiers = HashBiMap.create();
-	private static byte id = 0;
+    public static final String CHANNEL = "SmplAchv";
 
-	public static final byte ID_BYTE_ENCODABLE = 0;
-	public static final byte ID_ACHIEVEMENT_UPDATE = 1;
-	public static final byte ID_PAGE_UDPATE = 2;
-	public static final byte ID_TILE_UPDATE = 3;
-
-	public static void registerSerializeable(Class<? extends IByteEncodable<?>> clazz)
+    public static final SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(CHANNEL);
+    	
+	public static void init()
 	{
-		packetIdentifiers.put(id++, clazz);
+	    INSTANCE.registerMessage(PacketHandlerSA.class, MessageSendAchievements.class, 0, Side.CLIENT);
+	    INSTANCE.registerMessage(MessageAchievement.class, MessageAchievement.class, 1, Side.SERVER);
 	}
 
-	public static final String CHANNEL = "SmplAchv";
-
-	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
-	{
-		if (packet.channel.equals(CHANNEL))
-		{
-			byte lastByte = packet.data[packet.data.length - 1];
-			switch (packet.data[0])
-			{
-			case ID_BYTE_ENCODABLE:
-				Class<? extends IByteEncodable<?>> type = getType(lastByte);
-				packet = strip(packet);
-
-				IByteEncodable<?> inst;
-
-				try
-				{
-					inst = type.newInstance();
-				}
-				catch (Exception e)
-				{
-					throw new InstantiationError("IByteEncodable instances must have default constructors.");
-				}
-
-				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(packet.data));
-
-				inst.decode(dis, (EntityPlayer) player);
-				break;
-			case ID_ACHIEVEMENT_UPDATE:
-				packet.data = ArrayUtils.remove(packet.data, 0);
-
-				ByteArrayInputStream bin = new ByteArrayInputStream(packet.data);
-				DataInputStream in = new DataInputStream(bin);
-
-				try
-				{
-					DataManager.instance().getHandlerFor(in.readUTF()).getAchievement(in.readInt()).setState(in.readBoolean());
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				break;
-			case ID_PAGE_UDPATE:
-				packet.data = ArrayUtils.remove(packet.data, 0);
-
-				bin = new ByteArrayInputStream(packet.data);
-				in = new DataInputStream(bin);
-
-				try
-				{
-					NBTUtils.getTag(MinecraftServer.getServer().worldServerForDimension(in.readInt()).getPlayerEntityByName(in.readUTF()).getCurrentEquippedItem()).setInteger("sa:page", in.readInt());
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				break;
-			case ID_TILE_UPDATE:
-				packet.data = ArrayUtils.remove(packet.data, 0);
-
-				bin = new ByteArrayInputStream(packet.data);
-				in = new DataInputStream(bin);
-				try
-				{
-					int x = in.readInt(), y = in.readInt(), z = in.readInt(), dim = in.readInt(), page = in.readInt();
-					WorldServer world = MinecraftServer.getServer().worldServerForDimension(dim);
-
-					TileEntity te = world.getBlockTileEntity(x, y, z);
-					if (te != null && te instanceof TileEntityAchievementStand)
-					{
-						TileEntityAchievementStand stand = (TileEntityAchievementStand) te;
-						stand.page = page;
-						world.markBlockForUpdate(x, y, z);
-					}
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				break;
-			}
-		}
-	}
-
-	public static void sendToClient(Player player, IByteEncodable<?> obj)
-	{
-		if (obj == null)
-		{
-			return;
-		}
-
-		byte[] data = obj.encode();
-
-		data = ArrayUtils.add(data, 0, ID_BYTE_ENCODABLE);
-
-		data = addIdent(data, obj);
-
-		sendToClient(player, data);
-	}
-
-	public static void sendAchUpdateToServer(EntityPlayer player, int id, boolean state)
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(bos);
-
-		try
-		{
-			out.writeByte(ID_ACHIEVEMENT_UPDATE);
-			out.writeUTF(player.username);
-			out.writeInt(id);
-			out.writeBoolean(state);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		sendToServer(bos.toByteArray());
-	}
-
-	public static void sendPageUpdateToServer(EntityPlayer player, int page)
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(bos);
-
-		try
-		{
-			out.writeByte(ID_PAGE_UDPATE);
-			out.writeInt(player.worldObj.provider.dimensionId);
-			out.writeUTF(player.username);
-			out.writeInt(page);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		sendToServer(bos.toByteArray());
-	}
-
-	public static void sendTileUpdateToServer(EntityPlayer player, int page, int x, int y, int z)
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(bos);
-
-		try
-		{
-			out.writeByte(ID_TILE_UPDATE);
-			out.writeInt(x);
-			out.writeInt(y);
-			out.writeInt(z);
-			out.writeInt(player.worldObj.provider.dimensionId);
-			out.writeInt(page);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		sendToServer(bos.toByteArray());
-	}
-
-	private static void sendToClient(Player player, byte[] data)
-	{
-		PacketDispatcher.sendPacketToPlayer(getPacketFor(data), player);
-	}
-
-	// Not sure if we need this, not sure if it will work with our system, cross
-	// that bridge when we come to it
-
-	// public static void sendToServer(IByteEncodable obj)
-	// {
-	// byte[] data = obj.encode();
-	// sendToServer(data);
-	// }
-
-	private static void sendToServer(byte[] data)
-	{
-		PacketDispatcher.sendPacketToServer(getPacketFor(data));
-	}
-
-	private static Packet250CustomPayload getPacketFor(byte[] data)
-	{
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-
-		packet.data = data;
-		packet.length = data.length;
-
-		packet.channel = CHANNEL;
-
-		return packet;
-	}
-
-	private static byte[] addIdent(byte[] data, IByteEncodable<?> obj)
-	{
-		Byte ident = packetIdentifiers.inverse().get(obj.getClass());
-
-		if (ident == null)
-		{
-			throw new IllegalArgumentException("This IByteEncodable is not registered: " + obj.getClass().getName());
-		}
-
-		data = ArrayUtils.add(data, ident.byteValue());
-
-		return data;
-	}
-
-	private Class<? extends IByteEncodable<?>> getType(byte lastByte)
-	{
-		byte ident = lastByte;
-		Class<? extends IByteEncodable<?>> type = packetIdentifiers.get(ident);
-
-		if (type == null)
-		{
-			throw new IllegalArgumentException("This id is not registered: " + ident);
-		}
-
-		return type;
-	}
-
-	private Packet250CustomPayload strip(Packet250CustomPayload packet)
-	{
-		packet.data = ArrayUtils.remove(packet.data, packet.data.length - 1);
-		packet.data = ArrayUtils.remove(packet.data, 0);
-		packet.length -= 2;
-		return packet;
-	}
+    @Override
+    public IMessage onMessage(MessageSendAchievements message, MessageContext ctx)
+    {
+        DataManager.instance().changeMap(SimpleAchievements.proxy.getClientPlayer(), new DataHandler(message.list));
+        return null;
+    }
 }

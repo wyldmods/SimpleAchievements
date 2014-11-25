@@ -1,5 +1,7 @@
 package org.wyldmods.simpleachievements;
 
+import static org.wyldmods.simpleachievements.SimpleAchievements.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -10,43 +12,43 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.commons.io.FileUtils;
 import org.wyldmods.simpleachievements.common.BlockAchievementStand;
 import org.wyldmods.simpleachievements.common.CommonProxy;
 import org.wyldmods.simpleachievements.common.ItemAchievementBook;
 import org.wyldmods.simpleachievements.common.ItemBlockAchievementStand;
-import org.wyldmods.simpleachievements.common.PlayerTracker;
 import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 import org.wyldmods.simpleachievements.common.data.CommandFlush;
-import org.wyldmods.simpleachievements.common.data.DataHandler;
 import org.wyldmods.simpleachievements.common.data.DataManager;
-import org.wyldmods.simpleachievements.common.data.Element;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = SimpleAchievements.MODID, name = "Simple Achievements", version = "1.0.0")
-@NetworkMod(clientSideRequired = true, channels = PacketHandlerSA.CHANNEL, packetHandler = PacketHandlerSA.class)
+@Mod(modid = MODID, name = NAME, version = VERSION, dependencies = "required-after:ttCore")
 public class SimpleAchievements
 {
+    public static final String MODID = "SimpleAchievements";
+    public static final String NAME = "Simple Achievements";
+    public static final String VERSION = "@VERSION@";
+    
 	public static ArrayList<String> achievements = null;
 
-	public static final String MODID = "SimpleAchievements";
-
-	@Mod.Instance("SimpleAchievements")
+	@Instance("SimpleAchievements")
 	public static SimpleAchievements instance;
 
 	@SidedProxy(clientSide = "org.wyldmods.simpleachievements.client.ClientProxy", serverSide = "org.wyldmods.simpleachievements.common.CommonProxy")
@@ -67,7 +69,7 @@ public class SimpleAchievements
 
 	public static Logger logger = Logger.getLogger("SimpleAchievements");
 
-	@Mod.EventHandler
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		configDir = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID);
@@ -86,52 +88,48 @@ public class SimpleAchievements
 		}
 
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
-
-		PacketHandlerSA.registerSerializeable(DataHandler.class);
-		PacketHandlerSA.registerSerializeable(Element.class);
-
-		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		MinecraftForge.EVENT_BUS.register(DataManager.instance());
+		
+		PacketHandlerSA.init();
 	}
 
-	@Mod.EventHandler
+	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
-		achievementStand = new BlockAchievementStand(ConfigHandler.standID);
+		achievementStand = new BlockAchievementStand();
 		GameRegistry.registerBlock(achievementStand, ItemBlockAchievementStand.class, "sa.achievementStand");
 		GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
 
-		decorationBlock = new Block(ConfigHandler.decorationID, Material.wood).setStepSound(Block.soundWoodFootstep).setHardness(1.5f).setTextureName(MODID.toLowerCase() + ":stand_top")
-				.setUnlocalizedName("sa.decorativeWood");
+		decorationBlock = new Block(Material.wood){}.setStepSound(Block.soundTypeWood).setHardness(1.5f).setBlockTextureName(MODID.toLowerCase() + ":stand_top")
+				.setBlockName("sa.decorativeWood");
 		GameRegistry.registerBlock(decorationBlock, "sa.decorationBlock");
 
-		achievementBook = new ItemAchievementBook(ConfigHandler.bookID);
+		achievementBook = new ItemAchievementBook();
 		GameRegistry.registerItem(achievementBook, "sa.achievementBook");
 
-		ItemStack purpleDye = new ItemStack(Item.dyePowder, 1, 5);
+		ItemStack purpleDye = new ItemStack(Items.dye, 1, 5);
 
 		GameRegistry.addRecipe(new ItemStack(achievementStand), "dbd", "www", "www",
 
-		'd', purpleDye, 'b', Item.book, 'w', Block.planks);
+		'd', purpleDye, 'b', Items.book, 'w', Blocks.planks);
 
 		GameRegistry.addRecipe(new ItemStack(achievementStand), " b ", "www", "www",
 
-		'b', achievementBook, 'w', Block.planks);
+		'b', achievementBook, 'w', Blocks.planks);
 
 		GameRegistry.addRecipe(new ItemStack(achievementBook), "dbd",
 
-		'd', purpleDye, 'b', Item.book);
+		'd', purpleDye, 'b', Items.book);
 
 		GameRegistry.addRecipe(new ItemStack(decorationBlock, 5), "www", "wlw", "www",
 
-		'w', Block.planks, 'l', Item.leather);
+		'w', Blocks.planks, 'l', Items.leather);
 
 		proxy.registerRenderers();
 	}
 
-	@Mod.EventHandler
+	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 		ICommandManager server = MinecraftServer.getServer().getCommandManager();
