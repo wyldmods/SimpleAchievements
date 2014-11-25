@@ -100,7 +100,7 @@ public class MessageAchievement implements IMessage, IMessageHandler<MessageAchi
             }
             break;
         case TOGGLE:
-            DataManager.instance().getHandlerFor(player.getCommandSenderName()).getAchievement(message.data).state = message.state;
+            DataManager.INSTANCE.getHandlerFor(player.getCommandSenderName()).getAchievement(message.data).state = message.state;
             break;
         }
         return null;

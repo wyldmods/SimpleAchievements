@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 
 import org.wyldmods.simpleachievements.common.data.Element;
 
@@ -29,7 +28,6 @@ public class MessageSendAchievements implements IMessage
     
     @SuppressWarnings("serial")
     @Override
-    @SneakyThrows
     public void fromBytes(ByteBuf buf)
     {
         String objStr = ByteBufUtils.readUTF8String(buf);

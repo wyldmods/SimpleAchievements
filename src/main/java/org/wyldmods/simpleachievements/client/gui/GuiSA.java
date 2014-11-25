@@ -111,7 +111,7 @@ public class GuiSA extends GuiScreen
 	{
 		super();
 		this.mc = Minecraft.getMinecraft();
-		elements = DataManager.instance().getHandlerFor(player.getCommandSenderName());
+		elements = DataManager.INSTANCE.getHandlerFor(player.getCommandSenderName());
 		page = par1Page;
 	}
 

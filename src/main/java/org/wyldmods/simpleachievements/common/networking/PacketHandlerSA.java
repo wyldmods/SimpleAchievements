@@ -25,7 +25,7 @@ public class PacketHandlerSA implements IMessageHandler<MessageSendAchievements,
     @Override
     public IMessage onMessage(MessageSendAchievements message, MessageContext ctx)
     {
-        DataManager.instance().changeMap(SimpleAchievements.proxy.getClientPlayer(), new DataHandler(message.list));
+        DataManager.INSTANCE.changeMap(SimpleAchievements.proxy.getClientPlayer(), new DataHandler(message.list));
         return null;
     }
 }

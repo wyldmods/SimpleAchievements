@@ -24,7 +24,7 @@ public class CommandFlush extends CommandBase
 	{
 		CommandBase kick = new CommandServerKick();
 		kick.processCommand(icommandsender, new String[] { icommandsender.getCommandSenderName() });
-		DataManager.instance().flush();
+		DataManager.INSTANCE.flush();
 	}
 
 	@Override

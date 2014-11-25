@@ -53,17 +53,12 @@ public class DataManager
         EntityPlayer player = event.player;
         if (player != null && !player.worldObj.isRemote)
         {
-            DataManager.instance().checkMap(player.getCommandSenderName());
+            INSTANCE.checkMap(player.getCommandSenderName());
             PacketHandlerSA.INSTANCE.sendTo(new MessageSendAchievements(this.getHandlerFor(player.getCommandSenderName()).getAchievementList()), (EntityPlayerMP) player);
         }
 	}
 
-	private static DataManager instance = new DataManager();
-
-	public static DataManager instance()
-	{
-		return instance;
-	}
+	public static final DataManager INSTANCE = new DataManager();
 
 	private Map<String, DataHandler> map;
 	private Map<Integer, Formatting> formats;
@@ -79,23 +74,29 @@ public class DataManager
 	}
 
 	@SuppressWarnings("serial")
-	public void initFormatting() throws FileNotFoundException
+	public void initFormatting()
 	{
-		String s = "";
-		Scanner scan = new Scanner(SimpleAchievements.divConfig);
-		while (scan.hasNextLine())
-		{
-			s += scan.nextLine() + "\n";
-		}
+        String s = "";
+        try
+        {
+            Scanner scan = new Scanner(SimpleAchievements.divConfig);
+            while (scan.hasNextLine())
+            {
+                s += scan.nextLine() + "\n";
+            }
+            scan.close();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
 
-		formats = gson.fromJson(s, new TypeToken<Map<Integer, Formatting>>() {
-		}.getType());
+		formats = gson.fromJson(s, new TypeToken<Map<Integer, Formatting>>() {}.getType());
 		if (formats == null)
 		{
 			formats = new HashMap<Integer, Formatting>();
 			formats.put(0, new Formatting());
 		}
-		scan.close();
 	}
 
 	@SuppressWarnings("serial")

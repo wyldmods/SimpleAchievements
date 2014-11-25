@@ -49,7 +49,7 @@ public class ConfigHandler
 					throw new IllegalArgumentException("Illegal format \"" + s + "\". Format must be [text]" + endStr + "[divClass]");
 				}
 				Element ele = new Element(args[0]);
-				Formatting div = DataManager.instance().getFormat(Integer.parseInt(args[1]));
+				Formatting div = DataManager.INSTANCE.getFormat(Integer.parseInt(args[1]));
 
 				div.applyTo(ele);
 
@@ -68,6 +68,7 @@ public class ConfigHandler
 
 	public static void flush()
 	{
+	    DataManager.INSTANCE.initFormatting();
 		defaultElements = getDefaultElements();
 	}
 }

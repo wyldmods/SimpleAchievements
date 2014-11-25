@@ -29,6 +29,7 @@ import org.wyldmods.simpleachievements.common.data.CommandFlush;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
+import tterrag.core.common.Handlers;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -80,7 +81,7 @@ public class SimpleAchievements
 		try
 		{
 			create(achievementConfig, divConfig, usersConfig);
-			DataManager.instance().initFormatting();
+			DataManager.INSTANCE.initFormatting();
 		}
 		catch (Exception e)
 		{
@@ -89,6 +90,7 @@ public class SimpleAchievements
 
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		
+		Handlers.addPackage("org.wyldmods");
 		PacketHandlerSA.init();
 	}
 
