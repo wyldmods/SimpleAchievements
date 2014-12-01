@@ -53,6 +53,7 @@ public class DataManager
         EntityPlayer player = event.player;
         if (player != null && !player.worldObj.isRemote)
         {
+            SimpleAchievements.logger.info("Sending " + player.getCommandSenderName() + " achievement list.");
             INSTANCE.checkMap(player.getCommandSenderName());
             PacketHandlerSA.INSTANCE.sendTo(new MessageSendAchievements(this.getHandlerFor(player.getCommandSenderName()).getAchievementList()), (EntityPlayerMP) player);
         }

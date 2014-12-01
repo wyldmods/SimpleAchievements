@@ -2,9 +2,13 @@ package org.wyldmods.simpleachievements.common.data;
 
 import static org.wyldmods.simpleachievements.common.data.Element.Alignment.*;
 
-public class Element
+import java.io.Serializable;
+
+public class Element implements Serializable
 {
-	public enum Alignment
+    private static final long serialVersionUID = -6961457157774225518L;
+
+    public enum Alignment
 	{
 		LEFT, CENTER, RIGHT;
 	}
