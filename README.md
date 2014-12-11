@@ -1,4 +1,4 @@
-SimpleAchievements
+SimpleAchievements [![Build Status](http://ci.tterrag.com/buildStatus/icon?job=Simple Achievements)](http://ci.tterrag.com/job/Simple%20Achievements/)
 ==================
 
 This mod allows you to define a list of achievements, which will be listed in a book given to the player on first world start.
