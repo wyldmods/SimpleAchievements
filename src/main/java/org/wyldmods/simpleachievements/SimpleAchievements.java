@@ -58,7 +58,6 @@ public class SimpleAchievements
 	public static File configDir;
 	public static File achievementConfig;
 	public static File divConfig;
-	public static File usersConfig;
 
 	public static Block achievementStand;
 	public static Block decorationBlock;
@@ -76,11 +75,10 @@ public class SimpleAchievements
 		configDir = new File(event.getSuggestedConfigurationFile().getParentFile().getAbsolutePath() + "/" + MODID);
 		achievementConfig = new File(configDir.getAbsolutePath() + "/achievementList.txt");
 		divConfig = new File(configDir.getAbsolutePath() + "/divConfig.json");
-		usersConfig = new File(configDir.getAbsoluteFile() + "/specialUsers.json");
 
 		try
 		{
-			create(achievementConfig, divConfig, usersConfig);
+			create(achievementConfig, divConfig);
 			DataManager.INSTANCE.initFormatting();
 		}
 		catch (Exception e)

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -103,20 +104,11 @@ public class DataManager
 	@SuppressWarnings("serial")
 	public void initSpecialUsers() throws IOException
 	{
-		String s = "";
-		Scanner scan = new Scanner(SimpleAchievements.usersConfig);
-		while (scan.hasNextLine())
-		{
-			s += scan.nextLine() + "\n";
-		}
-
-		specialUsers = gson.fromJson(s, new TypeToken<Map<String, Offset>>() {
-		}.getType());
+		specialUsers = gson.fromJson(new InputStreamReader(SimpleAchievements.class.getResourceAsStream("/assets/simpleachievements/misc/specialUsers.json")), new TypeToken<Map<String, Offset>>(){}.getType());
 		if (specialUsers == null)
 		{
 			specialUsers = new HashMap<String, Offset>();
 		}
-		scan.close();
 	}
 
 	public void load()
