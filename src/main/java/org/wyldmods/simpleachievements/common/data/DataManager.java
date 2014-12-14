@@ -127,8 +127,11 @@ public class DataManager
 		saveDir.mkdirs();
 		saveFile = new File(saveDir.getAbsolutePath() + "/" + "achievements.json");
 
+
 		try
 		{
+	        initSpecialUsers();
+
 			if (saveFile.createNewFile())
 			{
 				return;
@@ -137,8 +140,6 @@ public class DataManager
 			{
 				map = loadMap(saveFile);
 			}
-
-			initSpecialUsers();
 		}
 		catch (IOException e)
 		{
@@ -242,5 +243,7 @@ public class DataManager
 		saveFile.delete();
 		
 		ConfigHandler.flush();
+		
+		load();
 	}
 }

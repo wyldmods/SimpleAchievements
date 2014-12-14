@@ -1,7 +1,6 @@
 package org.wyldmods.simpleachievements.common.data;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandServerKick;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 
@@ -22,8 +21,6 @@ public class CommandFlush extends CommandBase
 	@Override
 	public void processCommand(ICommandSender icommandsender, String[] astring)
 	{
-		CommandBase kick = new CommandServerKick();
-		kick.processCommand(icommandsender, new String[] { icommandsender.getCommandSenderName() });
 		DataManager.INSTANCE.flush();
 	}
 
