@@ -54,13 +54,6 @@ processResources {
     }
 }
 
-jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'tterrag.core.common.transform.TTCorePlugin'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
-}
-
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
