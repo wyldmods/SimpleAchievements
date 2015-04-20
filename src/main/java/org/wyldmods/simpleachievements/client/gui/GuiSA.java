@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -135,11 +136,18 @@ public class GuiSA extends GuiScreen
 		buttonList.add(new ButtonPage(elements.numElements(), startX + bookWidth - 22, startY + bookHeight - 23, true));
 		buttonList.add(new ButtonPage(elements.numElements() + 1, startX, startY + bookHeight - 23, false));
 	}
-	
-	private int getIndex()
-	{
-		if (page >= pages.size())
-		{
+
+    private int getIndex()
+    {
+        if (pages.size() <= 0)
+        {
+            mc.thePlayer.closeScreen();
+            mc.thePlayer.addChatComponentMessage(new ChatComponentText("No achievements found - check file encoding."));
+            return -1;
+        }
+
+        if (page >= pages.size())
+        {
 			page--;
 			return getIndex();
 		}
@@ -167,8 +175,13 @@ public class GuiSA extends GuiScreen
 		}
 	}
 
-	private int getNextButtons(int startIndex, List<ButtonElement> buttons)
-	{
+    private int getNextButtons(int startIndex, List<ButtonElement> buttons)
+    {
+        if (startIndex < 0)
+        {
+            return startIndex;
+        }
+
 		int baseHeight = 30;
 		int yPos = startYAch;
 		int width = bookWidth / 2 - 60;
