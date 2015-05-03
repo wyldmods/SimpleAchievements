@@ -72,17 +72,31 @@ public class DataManager
             Map<String, DataHandler> ret = Maps.newHashMap();
             for (Entry<String, JsonElement> e : root.entrySet())
             {
-                JsonArray arr = e.getValue().getAsJsonArray();
-                List<Element> elements = Lists.newArrayList();
-                for (int i = 0; i < arr.size(); i++)
+                if (e.getValue().isJsonArray()) // new format
                 {
-                    JsonObject val = arr.get(i).getAsJsonObject();
-                    Entry<String, JsonElement> prop = val.entrySet().iterator().next();
-                    Element def = new Element(ConfigHandler.idMap.get(prop.getKey()));
-                    def.setState(prop.getValue().getAsBoolean());
-                    elements.add(def);
+                    JsonArray arr = e.getValue().getAsJsonArray();
+                    List<Element> elements = Lists.newArrayList();
+                    for (int i = 0; i < arr.size(); i++)
+                    {
+                        JsonObject val = arr.get(i).getAsJsonObject();
+                        Entry<String, JsonElement> prop = val.entrySet().iterator().next();
+                        Element def = new Element(ConfigHandler.idMap.get(prop.getKey()));
+                        def.setState(prop.getValue().getAsBoolean());
+                        elements.add(def);
+                    }
+                    ret.put(e.getKey(), new DataHandler(elements));
                 }
-                ret.put(e.getKey(), new DataHandler(elements));
+                else // old format
+                {
+                    JsonArray arr = e.getValue().getAsJsonObject().getAsJsonArray("elements");
+                    List<Element> elements = Lists.newArrayList();
+                    for (int i = 0; i < arr.size(); i++)
+                    {
+                        Element ele = context.deserialize(arr.get(i), Element.class);
+                        elements.add(ele);
+                    }
+                    ret.put(e.getKey(), new DataHandler(elements));
+                }
             }
             return ret;
         }
