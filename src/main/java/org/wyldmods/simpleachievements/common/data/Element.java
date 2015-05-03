@@ -36,7 +36,22 @@ public class Element implements Serializable
 	public Element(String text)
 	{
 		this.text = text;
-	}
+    }
+
+    public Element(Element other)
+    {
+        if (other != null)
+        {
+            this.text = other.text;
+            this.state = other.state;
+            this.isAchievement = other.isAchievement;
+            this.color = other.color;
+            this.height = other.height;
+            this.colorChecked = other.colorChecked;
+            this.align = other.align;
+            this.shadow = other.shadow;
+        }
+    }
 
 	public boolean getState()
 	{
