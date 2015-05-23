@@ -81,8 +81,11 @@ public class DataManager
                         JsonObject val = arr.get(i).getAsJsonObject();
                         Entry<String, JsonElement> prop = val.entrySet().iterator().next();
                         Element def = new Element(ConfigHandler.idMap.get(prop.getKey()));
-                        def.setState(prop.getValue().getAsBoolean());
-                        elements.add(def);
+                        if (def.text != null) // Missing from defaults, so ignore it
+                        {
+                          def.setState(prop.getValue().getAsBoolean());
+                          elements.add(def);
+                        }
                     }
                     ret.put(e.getKey(), new DataHandler(elements));
                 }
@@ -257,9 +260,7 @@ public class DataManager
         }
         scan.close();
 
-        Map<String, DataHandler> ret = dataReader.fromJson(json, new TypeToken<Map<String, DataHandler>>()
-        {
-        }.getType());
+        Map<String, DataHandler> ret = dataReader.fromJson(json, new TypeToken<Map<String, DataHandler>>(){}.getType());
         return ret == null ? new HashMap<String, DataHandler>() : ret;
     }
 
