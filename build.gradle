@@ -23,6 +23,10 @@ minecraft {
     replaceIn "SimpleAchievements.java"
 }
 
+dependencies {
+    compile "org.projectlombok:lombok:1.14.8"
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
