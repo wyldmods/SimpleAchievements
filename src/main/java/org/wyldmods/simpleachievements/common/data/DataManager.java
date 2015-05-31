@@ -15,6 +15,7 @@ import java.util.Scanner;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.wyldmods.simpleachievements.SimpleAchievements;
@@ -22,8 +23,6 @@ import org.wyldmods.simpleachievements.client.gui.Offset;
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
 import org.wyldmods.simpleachievements.common.networking.MessageSendAchievements;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
-
-import tterrag.core.common.Handlers.Handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -39,10 +38,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
-@Handler
 public class DataManager
 {
     private static class Reader implements JsonSerializer<Map<String, DataHandler>>, JsonDeserializer<Map<String, DataHandler>>
@@ -144,6 +143,8 @@ public class DataManager
         map = new HashMap<String, DataHandler>();
         formats = new HashMap<Integer, Formatting>();
         specialUsers = new HashMap<String, Offset>();
+        MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SuppressWarnings("serial")

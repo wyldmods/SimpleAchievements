@@ -23,17 +23,6 @@ minecraft {
     replaceIn "SimpleAchievements.java"
 }
 
-repositories {
-    maven { // ttCore
-        name 'tterrag Repo'
-        url "http://maven.tterrag.com"
-    }
-}
-
-dependencies {
-    compile "tterrag.core:ttCore:${ttCore_version}"
-}
-
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

@@ -1,7 +1,5 @@
 package org.wyldmods.simpleachievements;
 
-import static org.wyldmods.simpleachievements.SimpleAchievements.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -29,7 +27,6 @@ import org.wyldmods.simpleachievements.common.data.CommandFlush;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
-import tterrag.core.common.Handlers;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -40,7 +37,9 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = MODID, name = NAME, version = VERSION, dependencies = "required-after:ttCore")
+import static org.wyldmods.simpleachievements.SimpleAchievements.*;
+
+@Mod(modid = MODID, name = NAME, version = VERSION)
 public class SimpleAchievements
 {
     public static final String MODID = "SimpleAchievements";
@@ -88,7 +87,6 @@ public class SimpleAchievements
 
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		
-		Handlers.addPackage("org.wyldmods");
 		PacketHandlerSA.init();
 	}
 

@@ -1,9 +1,11 @@
 package org.wyldmods.simpleachievements.common.data;
 
-import static org.wyldmods.simpleachievements.common.data.Element.Alignment.*;
-
 import java.io.Serializable;
 
+import lombok.ToString;
+
+import static org.wyldmods.simpleachievements.common.data.Element.Alignment.LEFT;
+@ToString
 public class Element implements Serializable
 {
     private static final long serialVersionUID = -6961457157774225518L;
