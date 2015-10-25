@@ -53,8 +53,8 @@ public class ConfigHandler
                     scan.close();
                     throw new IllegalArgumentException("Illegal format \"" + s + "\". Format must be [text]" + endStr + "[divClass]");
                 }
-                Element ele = new Element(args[0]);
-                Formatting div = DataManager.INSTANCE.getFormat(Integer.parseInt(args[1]));
+                Element ele = new Element(args[0].trim());
+                Formatting div = DataManager.INSTANCE.getFormat(Integer.parseInt(args[1].trim()));
 
                 div.applyTo(ele);
 
