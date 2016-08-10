@@ -15,7 +15,7 @@ public class ItemBlockAchievementStand extends ItemBlock
 	{
 		super(block);
 		setHasSubtypes(true);
-		setCreativeTab(CreativeTabs.tabMisc);
+		setCreativeTab(CreativeTabs.MISC);
 	}
 
 	@Override

@@ -4,11 +4,13 @@ import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.data.DataHandler;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
+
 
 public class PacketHandlerSA implements IMessageHandler<MessageSendAchievements, IMessage>
 {
@@ -23,9 +25,14 @@ public class PacketHandlerSA implements IMessageHandler<MessageSendAchievements,
 	}
 
     @Override
-    public IMessage onMessage(MessageSendAchievements message, MessageContext ctx)
+    public IMessage onMessage(final MessageSendAchievements message, MessageContext ctx)
     {
-        DataManager.INSTANCE.changeMap(SimpleAchievements.proxy.getClientPlayer(), new DataHandler(message.list));
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                DataManager.INSTANCE.changeMap(SimpleAchievements.proxy.getClientPlayer(), new DataHandler(message.list));                
+            }
+        });
         return null;
     }
 }

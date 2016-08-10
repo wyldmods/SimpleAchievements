@@ -1,0 +1,9 @@
+{   
+    "parent": "block/enchanting_table_base",
+    "textures": {
+        "particle": "simpleachievements:blocks/stand_bottom",
+        "bottom": "simpleachievements:blocks/stand_bottom",
+        "top": "simpleachievements:blocks/stand_top",
+        "side": "simpleachievements:blocks/stand_side"
+    }
+}

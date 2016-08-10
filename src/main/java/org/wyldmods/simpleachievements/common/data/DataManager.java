@@ -12,12 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.client.gui.Offset;
 import org.wyldmods.simpleachievements.common.config.ConfigHandler;
@@ -38,9 +32,14 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class DataManager
 {
@@ -71,34 +70,20 @@ public class DataManager
             Map<String, DataHandler> ret = Maps.newHashMap();
             for (Entry<String, JsonElement> e : root.entrySet())
             {
-                if (e.getValue().isJsonArray()) // new format
+                JsonArray arr = e.getValue().getAsJsonArray();
+                List<Element> elements = Lists.newArrayList();
+                for (int i = 0; i < arr.size(); i++)
                 {
-                    JsonArray arr = e.getValue().getAsJsonArray();
-                    List<Element> elements = Lists.newArrayList();
-                    for (int i = 0; i < arr.size(); i++)
+                    JsonObject val = arr.get(i).getAsJsonObject();
+                    Entry<String, JsonElement> prop = val.entrySet().iterator().next();
+                    Element def = new Element(ConfigHandler.idMap.get(prop.getKey()));
+                    if (def.text != null) // Missing from defaults, so ignore it
                     {
-                        JsonObject val = arr.get(i).getAsJsonObject();
-                        Entry<String, JsonElement> prop = val.entrySet().iterator().next();
-                        Element def = new Element(ConfigHandler.idMap.get(prop.getKey()));
-                        if (def.text != null) // Missing from defaults, so ignore it
-                        {
-                          def.setState(prop.getValue().getAsBoolean());
-                          elements.add(def);
-                        }
+                        def.setState(prop.getValue().getAsBoolean());
+                        elements.add(def);
                     }
-                    ret.put(e.getKey(), new DataHandler(elements));
                 }
-                else // old format
-                {
-                    JsonArray arr = e.getValue().getAsJsonObject().getAsJsonArray("elements");
-                    List<Element> elements = Lists.newArrayList();
-                    for (int i = 0; i < arr.size(); i++)
-                    {
-                        Element ele = context.deserialize(arr.get(i), Element.class);
-                        elements.add(ele);
-                    }
-                    ret.put(e.getKey(), new DataHandler(elements));
-                }
+                ret.put(e.getKey(), new DataHandler(elements));
             }
             return ret;
         }
@@ -109,14 +94,14 @@ public class DataManager
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load load)
     {
-        if (!load.world.isRemote)
+        if (!load.getWorld().isRemote)
             load();
     }
 
     @SubscribeEvent
     public void onWorldSave(WorldEvent.Save save)
     {
-        if (!save.world.isRemote)
+        if (!save.getWorld().isRemote)
             save();
     }
 
@@ -126,9 +111,9 @@ public class DataManager
         EntityPlayer player = event.player;
         if (player != null && !player.worldObj.isRemote)
         {
-            SimpleAchievements.logger.info("Sending " + player.getCommandSenderName() + " achievement list.");
-            INSTANCE.checkMap(player.getCommandSenderName());
-            PacketHandlerSA.INSTANCE.sendTo(new MessageSendAchievements(this.getHandlerFor(player.getCommandSenderName()).getAchievementList()),
+            SimpleAchievements.logger.info("Sending " + player.getName() + " achievement list.");
+            INSTANCE.checkMap(player.getName());
+            PacketHandlerSA.INSTANCE.sendTo(new MessageSendAchievements(this.getHandlerFor(player.getName()).getAchievementList()),
                     (EntityPlayerMP) player);
         }
     }
@@ -147,7 +132,6 @@ public class DataManager
         formats = new HashMap<Integer, Formatting>();
         specialUsers = new HashMap<String, Offset>();
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SuppressWarnings("serial")
@@ -168,9 +152,7 @@ public class DataManager
             throw new RuntimeException(e);
         }
 
-        formats = new Gson().fromJson(s, new TypeToken<Map<Integer, Formatting>>()
-        {
-        }.getType());
+        formats = new Gson().fromJson(s, new TypeToken<Map<Integer, Formatting>>(){}.getType());
         if (formats == null)
         {
             formats = new HashMap<Integer, Formatting>();
@@ -183,9 +165,7 @@ public class DataManager
     {
         specialUsers = new Gson().fromJson(
                 new InputStreamReader(SimpleAchievements.class.getResourceAsStream("/assets/simpleachievements/misc/specialUsers.json")),
-                new TypeToken<Map<String, Offset>>()
-                {
-                }.getType());
+                new TypeToken<Map<String, Offset>>(){}.getType());
         if (specialUsers == null)
         {
             specialUsers = new HashMap<String, Offset>();
@@ -288,7 +268,7 @@ public class DataManager
 
     public void changeMap(EntityPlayer player, DataHandler handler)
     {
-        map.put(player.getCommandSenderName(), handler);
+        map.put(player.getName(), handler);
     }
 
     public Formatting getFormat(int div)

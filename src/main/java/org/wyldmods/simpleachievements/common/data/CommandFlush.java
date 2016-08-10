@@ -1,8 +1,9 @@
 package org.wyldmods.simpleachievements.common.data;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 
 public class CommandFlush extends CommandBase
 {
@@ -19,21 +20,8 @@ public class CommandFlush extends CommandBase
 	}
 
 	@Override
-	public void processCommand(ICommandSender icommandsender, String[] astring)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
 		DataManager.INSTANCE.flush();
-	}
-
-	@Override
-	public int compareTo(Object o)
-	{
-		if (o instanceof ICommand)
-		{
-			return this.compareTo((ICommand) o);
-		}
-		else
-		{
-			return 0;
-		}
 	}
 }

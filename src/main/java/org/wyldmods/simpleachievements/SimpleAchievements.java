@@ -6,16 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ServerCommandManager;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-
 import org.apache.commons.io.FileUtils;
 import org.wyldmods.simpleachievements.common.BlockAchievementStand;
 import org.wyldmods.simpleachievements.common.CommonProxy;
@@ -27,17 +17,27 @@ import org.wyldmods.simpleachievements.common.data.CommandFlush;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import static org.wyldmods.simpleachievements.SimpleAchievements.*;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = MODID, name = NAME, version = VERSION)
 public class SimpleAchievements
@@ -88,49 +88,49 @@ public class SimpleAchievements
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		
 		PacketHandlerSA.init();
+
+        achievementStand = new BlockAchievementStand();
+        GameRegistry.register(achievementStand);
+        GameRegistry.register(new ItemBlockAchievementStand(achievementStand).setRegistryName(achievementStand.getRegistryName()));
+        GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
+
+        decorationBlock = new Block(Material.WOOD){{setSoundType(SoundType.WOOD);}}
+            .setCreativeTab(CreativeTabs.DECORATIONS).setHardness(1.5f).setUnlocalizedName("sa.decorativeWood").setRegistryName("decoration_block");
+        GameRegistry.register(decorationBlock);
+        GameRegistry.register(new ItemBlock(decorationBlock).setRegistryName(decorationBlock.getRegistryName()));
+
+        achievementBook = new ItemAchievementBook();
+        GameRegistry.register(achievementBook.setRegistryName("achievement_book"));
+		
+		proxy.registerRenderers();
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-
-		achievementStand = new BlockAchievementStand();
-		GameRegistry.registerBlock(achievementStand, ItemBlockAchievementStand.class, "sa.achievementStand");
-		GameRegistry.registerTileEntity(TileEntityAchievementStand.class, "sa.tileAchievementStand");
-
-		decorationBlock = new Block(Material.wood){}.setStepSound(Block.soundTypeWood).setHardness(1.5f).setBlockTextureName(MODID.toLowerCase() + ":stand_top")
-				.setBlockName("sa.decorativeWood");
-		GameRegistry.registerBlock(decorationBlock, "sa.decorationBlock");
-
-		achievementBook = new ItemAchievementBook();
-		GameRegistry.registerItem(achievementBook, "sa.achievementBook");
-
-		ItemStack purpleDye = new ItemStack(Items.dye, 1, 5);
+		ItemStack purpleDye = new ItemStack(Items.DYE, 1, 5);
 
 		GameRegistry.addRecipe(new ItemStack(achievementStand), "dbd", "www", "www",
 
-		'd', purpleDye, 'b', Items.book, 'w', Blocks.planks);
+		'd', purpleDye, 'b', Items.BOOK, 'w', Blocks.PLANKS);
 
 		GameRegistry.addRecipe(new ItemStack(achievementStand), " b ", "www", "www",
 
-		'b', achievementBook, 'w', Blocks.planks);
+		'b', achievementBook, 'w', Blocks.PLANKS);
 
 		GameRegistry.addRecipe(new ItemStack(achievementBook), "dbd",
 
-		'd', purpleDye, 'b', Items.book);
+		'd', purpleDye, 'b', Items.BOOK);
 
 		GameRegistry.addRecipe(new ItemStack(decorationBlock, 5), "www", "wlw", "www",
 
-		'w', Blocks.planks, 'l', Items.leather);
-
-		proxy.registerRenderers();
+		'w', Blocks.PLANKS, 'l', Items.LEATHER);
 	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
-		ICommandManager server = MinecraftServer.getServer().getCommandManager();
+		ICommandManager server = event.getServer().getCommandManager();
 		((ServerCommandManager) server).registerCommand(new CommandFlush());
 	}
 

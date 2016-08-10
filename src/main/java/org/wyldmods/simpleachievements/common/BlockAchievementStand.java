@@ -1,44 +1,76 @@
 package org.wyldmods.simpleachievements.common;
 
+import javax.annotation.Nonnull;
+
+import org.wyldmods.simpleachievements.SimpleAchievements;
+import org.wyldmods.simpleachievements.client.gui.GuiHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import org.wyldmods.simpleachievements.SimpleAchievements;
-import org.wyldmods.simpleachievements.client.gui.GuiHelper;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAchievementStand extends Block implements ITileEntityProvider
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon bottom, top;
-
+    private static final @Nonnull AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
+    
+    public static final @Nonnull PropertyBool HAS_BOOK = PropertyBool.create("has_book");
+    
 	public BlockAchievementStand()
 	{
-		super(Material.wood);
-		this.setBlockName("sa.achievementTable");
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
+		super(Material.WOOD);
+		this.setUnlocalizedName("sa.achievementTable");
+		this.setRegistryName("achievement_stand");
 		setHardness(1.5f);
-		setStepSound(soundTypeWood);
-		setCreativeTab(CreativeTabs.tabMisc);
+		setSoundType(SoundType.WOOD);
+		setCreativeTab(CreativeTabs.MISC);
+		setDefaultState(getDefaultState().withProperty(HAS_BOOK, true));
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
+	protected BlockStateContainer createBlockState() {
+	    return new BlockStateContainer(this, HAS_BOOK);
+	}
+	
+	@Override
+	public int getMetaFromState(IBlockState state) {
+	    return state.getValue(HAS_BOOK) ? 0 : 1;
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+	    return getDefaultState().withProperty(HAS_BOOK, meta == 0);
+	}
+	
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+	    return BOUNDING_BOX;
+	}
+	
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) 
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		TileEntityAchievementStand stand = (TileEntityAchievementStand) world.getTileEntity(x, y, z);
-		if (meta == 0)
+		TileEntityAchievementStand stand = (TileEntityAchievementStand) world.getTileEntity(pos);
+		if (stand == null)
+		{
+		    return false;
+		}
+		
+		if (state.getValue(HAS_BOOK))
 		{
 			if (player.isSneaking())
 			{
@@ -47,59 +79,43 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 				bookTag.setInteger("sa:page", stand.page);
 				bookToAdd.setTagCompound(bookTag);
 				player.inventory.addItemStackToInventory(bookToAdd);
-				world.setBlockMetadataWithNotify(x, y, z, 1, 3);
+				world.setBlockState(pos, state.withProperty(HAS_BOOK, false));
 			}
 			else
 			{
 				if (world.isRemote)
 				{
-					GuiHelper.openSAGUI(world, player, x, y, z);
+					GuiHelper.openSAGUI(world, player, pos);
 				}
 			}
 			return true;
 		}
-		else if (meta == 1)
+		else
 		{
-			ItemStack stack = player.getCurrentEquippedItem();
-			if (stack != null && stack.getItem() == SimpleAchievements.achievementBook)
-			{
-				TileEntityAchievementStand currTable = (TileEntityAchievementStand) world.getTileEntity(x, y, z);
-				NBTTagCompound bookTag = NBTUtils.getTag(stack);
-				currTable.page = bookTag.getInteger("sa:page");
-				player.inventory.decrStackSize(player.inventory.currentItem, 1);
-				world.setBlockMetadataWithNotify(x, y, z, 0, 3);
-				return true;
-			}
-		}
+			ItemStack stack = player.getHeldItem(hand);
+            if (stack != null && stack.getItem() == SimpleAchievements.achievementBook) 
+            {
+                NBTTagCompound bookTag = NBTUtils.getTag(stack);
+                stand.page = bookTag.getInteger("sa:page");
+                player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                world.setBlockState(pos, state.withProperty(HAS_BOOK, true));
+                return true;
+            }
+        }
+		
 		return false;
 	}
-
-	@SideOnly(Side.CLIENT)
+	
 	@Override
-	public void registerBlockIcons(IIconRegister register)
-	{
-		this.blockIcon = register.registerIcon(SimpleAchievements.MODID + ":" + "stand_side");
-		this.bottom = register.registerIcon(SimpleAchievements.MODID + ":" + "stand_bottom");
-		this.top = register.registerIcon(SimpleAchievements.MODID + ":" + "stand_top");
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta)
-	{
-		return side > 1 ? this.blockIcon : side == 1 ? top : bottom;
-	}
-
-	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
-
+	
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isFullCube(IBlockState state) 
 	{
-		return false;
+	    return false;
 	}
 
 	@Override
@@ -109,14 +125,8 @@ public class BlockAchievementStand extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public int damageDropped(int par1)
-	{
-		return par1;
-	}
-
-	@Override
-	public int getDamageValue(World par1World, int par2, int par3, int par4)
-	{
-		return par1World.getBlockMetadata(par2, par3, par4);
+	public int damageDropped(IBlockState state) 
+	{      
+	    return getMetaFromState(state);
 	}
 }

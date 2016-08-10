@@ -2,8 +2,7 @@ package org.wyldmods.simpleachievements.common;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntityEnchantmentTable;
 
 public class TileEntityAchievementStand extends TileEntityEnchantmentTable
@@ -12,10 +11,10 @@ public class TileEntityAchievementStand extends TileEntityEnchantmentTable
 	public int page;
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1)
+	public NBTTagCompound writeToNBT(NBTTagCompound par1)
 	{
 		par1.setInteger("sa:page", page);
-		super.writeToNBT(par1);
+		return super.writeToNBT(par1);
 	}
 
 	@Override
@@ -26,17 +25,21 @@ public class TileEntityAchievementStand extends TileEntityEnchantmentTable
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public NBTTagCompound getUpdateTag()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
+	    return writeToNBT(new NBTTagCompound());
+	}
+
+    @Override
+	public SPacketUpdateTileEntity getUpdatePacket() 
+	{
+	    return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		readFromNBT(pkt.func_148857_g());
+		readFromNBT(pkt.getNbtCompound());	
 	}
 
 	public void setPage(int par1)

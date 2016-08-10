@@ -1,17 +1,9 @@
 package org.wyldmods.simpleachievements.client.gui;
 
-import static org.wyldmods.simpleachievements.SimpleAchievements.*;
-import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ResourceLocation;
+import javax.annotation.Nonnull;
 
 import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
@@ -23,6 +15,19 @@ import org.wyldmods.simpleachievements.common.data.Element;
 import org.wyldmods.simpleachievements.common.networking.MessageAchievement;
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
+import com.google.common.collect.Lists;
+
+import static org.wyldmods.simpleachievements.SimpleAchievements.*;
+import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.*;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
+
 public class GuiSA extends GuiScreen
 {
 	public enum Origin
@@ -31,6 +36,7 @@ public class GuiSA extends GuiScreen
 	}
 
 	private Origin origin;
+	private @Nonnull EnumHand hand = EnumHand.MAIN_HAND;
 
 	private final int maxDelay = 5;
 	private int clickDelay = maxDelay;
@@ -55,8 +61,8 @@ public class GuiSA extends GuiScreen
 
 	private TileEntityAchievementStand stand;
 
-	private static ResourceLocation bgl = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_left.png");
-	private static ResourceLocation bgr = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_right.png");
+	private static final @Nonnull ResourceLocation bgl = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_left.png");
+	private static final @Nonnull ResourceLocation bgr = new ResourceLocation(SimpleAchievements.MODID.toLowerCase() + ":" + "textures/gui/bookgui_right.png");
 
 	private class ButtonPage extends GuiButton
 	{
@@ -95,10 +101,11 @@ public class GuiSA extends GuiScreen
 		}
 	}
 
-	public GuiSA(EntityPlayer player)
+	public GuiSA(EntityPlayer player, @Nonnull EnumHand hand)
 	{
-		this(player, NBTUtils.getTag(player.getCurrentEquippedItem()).getInteger("sa:page"));
+		this(player, NBTUtils.getTag(player.getHeldItem(hand)).getInteger("sa:page"));
 		this.origin = ITEM;
+		this.hand = hand;
 	}
 
 	public GuiSA(EntityPlayer player, TileEntityAchievementStand par2stand)
@@ -112,11 +119,10 @@ public class GuiSA extends GuiScreen
 	{
 		super();
 		this.mc = Minecraft.getMinecraft();
-		elements = DataManager.INSTANCE.getHandlerFor(player.getCommandSenderName());
+		elements = DataManager.INSTANCE.getHandlerFor(player.getName());
 		page = par1Page;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui()
 	{
@@ -142,7 +148,7 @@ public class GuiSA extends GuiScreen
         if (pages.size() <= 0)
         {
             mc.thePlayer.closeScreen();
-            mc.thePlayer.addChatComponentMessage(new ChatComponentText("No achievements found - check file encoding."));
+            mc.thePlayer.addChatComponentMessage(new TextComponentString("No achievements found - check file encoding."));
             return -1;
         }
 
@@ -164,7 +170,7 @@ public class GuiSA extends GuiScreen
 
 	private void initPages()
 	{
-		List<ButtonElement> mockList = new ArrayList<ButtonElement>();
+		List<GuiButton> mockList = Lists.newArrayList();
 		pages = new ArrayList<Integer>();
 
 		int idx = 0;
@@ -175,7 +181,7 @@ public class GuiSA extends GuiScreen
 		}
 	}
 
-    private int getNextButtons(int startIndex, List<ButtonElement> buttons)
+    private int getNextButtons(int startIndex, List<GuiButton> buttons)
     {
         if (startIndex < 0)
         {
@@ -295,11 +301,11 @@ public class GuiSA extends GuiScreen
 		{
 		case BLOCK:
 			stand.page = page;
-			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(stand.page, stand.xCoord, stand.yCoord, stand.zCoord));
+			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(stand.page, stand.getPos()));
 			break;
 		case ITEM:
 			EntityPlayer player = mc.thePlayer;
-			NBTUtils.getTag(player.getCurrentEquippedItem()).setInteger("sa:page", page);
+			NBTUtils.getTag(player.getHeldItem(hand)).setInteger("sa:page", page);
 			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(page));
 			break;
 		}
@@ -309,7 +315,7 @@ public class GuiSA extends GuiScreen
 	public void setWorldAndResolution(Minecraft par1Minecraft, int par2, int par3)
 	{
 		this.mc = par1Minecraft;
-		this.fontRendererObj = par1Minecraft.fontRenderer;
+		this.fontRendererObj = par1Minecraft.fontRendererObj;
 		this.width = par2;
 		this.height = par3;
 		this.buttonList.clear();

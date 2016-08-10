@@ -3,6 +3,9 @@ package org.wyldmods.simpleachievements.client.gui;
 import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
 
 import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,7 +20,7 @@ import org.wyldmods.simpleachievements.common.data.Element;
 
 public class ButtonElement extends GuiButton
 {
-	static final ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(), "textures/gui/checkboxes.png");
+	static final @Nonnull ResourceLocation texture = new ResourceLocation(SimpleAchievements.MODID.toLowerCase(Locale.US), "textures/gui/checkboxes.png");
 
 	private final Element element;
 
@@ -27,10 +30,9 @@ public class ButtonElement extends GuiButton
 
 		this.element = ele;
 
-		this.height += (Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(ele.getText(), width).size() - 1) * 8;
+		this.height += (Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(ele.getText(), width).size() - 1) * 8;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int mouseX, int mouseY)
 	{
@@ -59,7 +61,7 @@ public class ButtonElement extends GuiButton
 			drawTexturedModalRect(xPosition, yPosition + (height / 2) - 10, offsetX, offsetY, 20, 20);
 		}
 
-		FontRenderer fnt = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fnt = Minecraft.getMinecraft().fontRendererObj;
 		int lineNum = getExpectedLines(this.element, width);
 
 		// render the text according to alignment
@@ -111,11 +113,11 @@ public class ButtonElement extends GuiButton
 
 	public static int getExpectedLines(Element ele, int width)
 	{
-		return Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(ele.getText(), width).size();
+		return Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(ele.getText(), width).size();
 	}
 
 	private static Offset getOffsetForPlayer(EntityPlayer player)
 	{
-		return DataManager.INSTANCE.getOffsetFor(player.getCommandSenderName());
+		return DataManager.INSTANCE.getOffsetFor(player.getName());
 	}
 }

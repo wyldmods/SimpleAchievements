@@ -2,6 +2,8 @@ package org.wyldmods.simpleachievements.common.data;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 import lombok.ToString;
 
 import static org.wyldmods.simpleachievements.common.data.Element.Alignment.LEFT;
@@ -95,7 +97,8 @@ public class Element implements Serializable
 		return align;
 	}
 
-	public String getText()
+	@SuppressWarnings("null")
+    public @Nonnull String getText()
 	{
 		return text.replace(lineSplit, "\n");
 	}
