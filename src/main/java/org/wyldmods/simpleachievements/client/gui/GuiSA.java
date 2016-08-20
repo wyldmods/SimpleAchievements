@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.NBTUtils;
 import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
@@ -23,6 +22,7 @@ import static org.wyldmods.simpleachievements.client.gui.GuiSA.Origin.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -80,7 +80,7 @@ public class GuiSA extends GuiScreen
 			if (this.visible)
 			{
 				par1Minecraft.getTextureManager().bindTexture(ButtonElement.texture);
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 				boolean hover = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
@@ -235,7 +235,7 @@ public class GuiSA extends GuiScreen
 	{
 		clickDelay = Math.max(0, clickDelay - 1);
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		int newX = (this.width - bookWidth) / 2;
 		int newY = (int) ((this.height - bookHeight) / 2.5);

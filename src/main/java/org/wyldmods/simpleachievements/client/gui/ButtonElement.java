@@ -1,22 +1,22 @@
 package org.wyldmods.simpleachievements.client.gui;
 
-import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
-
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.data.DataManager;
 import org.wyldmods.simpleachievements.common.data.Element;
+
+import static org.wyldmods.simpleachievements.SimpleAchievements.bookWidth;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 
 public class ButtonElement extends GuiButton
 {
@@ -37,7 +37,7 @@ public class ButtonElement extends GuiButton
 	public void drawButton(Minecraft par1Minecraft, int mouseX, int mouseY)
 	{
 		par1Minecraft.renderEngine.bindTexture(texture);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		int offsetX = 0, offsetY = 0;
 
@@ -73,7 +73,7 @@ public class ButtonElement extends GuiButton
 			{
 				String s = lines.get(i);
 				fnt.drawString(s, xPosition + getIconOffset() + (bookWidth / 4) - 20 - (fnt.getStringWidth(s) / 2), yPosition + (height / 2) - lineNum * 4 + i * 8,
-						element.getColorBasedOnState(), element.shadow);
+						element.getColorBasedOnState(), false);
 			}
 			break;
 		case LEFT:

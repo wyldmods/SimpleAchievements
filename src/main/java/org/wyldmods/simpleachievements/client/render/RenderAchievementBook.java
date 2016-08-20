@@ -1,10 +1,10 @@
 package org.wyldmods.simpleachievements.client.render;
 
-import org.lwjgl.opengl.GL11;
 import org.wyldmods.simpleachievements.SimpleAchievements;
 import org.wyldmods.simpleachievements.common.TileEntityAchievementStand;
 
 import net.minecraft.client.model.ModelBook;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -20,10 +20,10 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer<TileEntityA
 	{
 		if (te.getBlockMetadata() == 0)
 		{
-		    GL11.glPushMatrix();
-	        GL11.glTranslatef((float)x + 0.5F, (float)y + 0.75F, (float)z + 0.5F);
+		    GlStateManager.pushMatrix();
+	        GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F, (float)z + 0.5F);
 	        float f1 = (float)te.tickCount + partialTicks;
-	        GL11.glTranslatef(0.0F, 0.1F + MathHelper.sin(f1 * 0.1F) * 0.01F, 0.0F);
+	        GlStateManager.translate(0.0F, 0.1F + MathHelper.sin(f1 * 0.1F) * 0.01F, 0.0F);
 	        float f2;
 
 	        for (f2 = te.bookRotation - te.bookRotationPrev; f2 >= (float)Math.PI; f2 -= ((float)Math.PI * 2F))
@@ -37,8 +37,8 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer<TileEntityA
 	        }
 
 	        float f3 = te.bookRotationPrev + f2 * partialTicks;
-	        GL11.glRotatef(-f3 * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
-	        GL11.glRotatef(80.0F, 0.0F, 0.0F, 1.0F);
+	        GlStateManager.rotate(-f3 * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
+	        GlStateManager.rotate(80.0F, 0.0F, 0.0F, 1.0F);
 	        this.bindTexture(enchantingTableBookTextures);
 	        float f4 = te.pageFlipPrev + (te.pageFlip - te.pageFlipPrev) * partialTicks + 0.25F;
 	        float f5 = te.pageFlipPrev + (te.pageFlip - te.pageFlipPrev) * partialTicks + 0.75F;
@@ -66,9 +66,9 @@ public class RenderAchievementBook extends TileEntitySpecialRenderer<TileEntityA
 	        }
 
 	        float f6 = te.bookSpreadPrev + (te.bookSpread - te.bookSpreadPrev) * partialTicks;
-	        GL11.glEnable(GL11.GL_CULL_FACE);
+	        GlStateManager.enableCull();
 	        this.enchantmentBook.render((Entity)null, f1, f4, f5, f6, 0.0F, 0.0625F);
-	        GL11.glPopMatrix();
+	        GlStateManager.popMatrix();
 		}
 	}
 }
