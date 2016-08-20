@@ -73,7 +73,7 @@ public class ButtonElement extends GuiButton
 			{
 				String s = lines.get(i);
 				fnt.drawString(s, xPosition + getIconOffset() + (bookWidth / 4) - 20 - (fnt.getStringWidth(s) / 2), yPosition + (height / 2) - lineNum * 4 + i * 8,
-						element.getColorBasedOnState(), false);
+						element.getColorBasedOnState(), element.shadow);
 			}
 			break;
 		case LEFT:
