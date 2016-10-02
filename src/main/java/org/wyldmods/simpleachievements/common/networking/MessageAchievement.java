@@ -7,10 +7,10 @@ import org.wyldmods.simpleachievements.common.data.DataManager;
 import io.netty.buffer.ByteBuf;
 import lombok.NoArgsConstructor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -76,7 +76,7 @@ public class MessageAchievement implements IMessage, IMessageHandler<MessageAchi
     @Override
     public IMessage onMessage(final MessageAchievement message, final MessageContext ctx)
     {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable() {
             
             @Override
             public void run() {
