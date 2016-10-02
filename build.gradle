@@ -15,6 +15,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven-publish'
 
+boolean dev = System.getenv("RELEASE") == null || System.getenv("RELEASE").equalsIgnoreCase("false")
+
 group = 'org.wyldmods.simpleachievements'
 archivesBaseName = "SimpleAchievements"
 version = "MC${minecraft_version}-${mod_version}-${System.getenv().BUILD_NUMBER}"
@@ -65,7 +67,7 @@ processResources {
     }
 }
 
-tasks.curseforge.enabled = project.hasProperty('curseforge_key')
+tasks.curseforge.enabled = !dev && project.hasProperty('curseforge_key')
     
 curseforge {
     if (project.hasProperty('curseforge_key')) {
