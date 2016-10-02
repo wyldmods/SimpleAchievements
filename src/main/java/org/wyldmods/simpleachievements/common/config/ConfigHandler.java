@@ -35,6 +35,8 @@ public class ConfigHandler
         endStr = config.get(Configuration.CATEGORY_GENERAL, "endStr", endStr,
                 "The REGEX that deliminates the end of a line, after which you place the div ID").getString();
 
+        config.save();
+        
         initDefaultElements();
     }
 
