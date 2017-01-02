@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -32,9 +33,9 @@ public class MessageAchievement implements IMessage, IMessageHandler<MessageAchi
     private BlockPos pos;
     private MessageType type;
     
-    public MessageAchievement(int id)
+    public MessageAchievement(int id, EnumHand hand)
     {
-        this(id, false, new BlockPos(0, 0, 0), MessageType.PAGE);
+        this(id, hand == EnumHand.MAIN_HAND, new BlockPos(0, 0, 0), MessageType.PAGE);
     }
     
     public MessageAchievement(int id, boolean state)
@@ -85,7 +86,7 @@ public class MessageAchievement implements IMessage, IMessageHandler<MessageAchi
                 switch(message.type)
                 {
                 case PAGE:
-                    NBTUtils.getTag(player.getHeldItemMainhand()).setInteger("sa:page", message.data);
+                    NBTUtils.getTag(player.getHeldItem(message.state ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND)).setInteger("sa:page", message.data);
                     break;
                 case TILE:
                     TileEntity te = player.worldObj.getTileEntity(message.pos);

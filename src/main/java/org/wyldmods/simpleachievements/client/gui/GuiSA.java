@@ -306,7 +306,7 @@ public class GuiSA extends GuiScreen
 		case ITEM:
 			EntityPlayer player = mc.thePlayer;
 			NBTUtils.getTag(player.getHeldItem(hand)).setInteger("sa:page", page);
-			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(page));
+			PacketHandlerSA.INSTANCE.sendToServer(new MessageAchievement(page, hand));
 			break;
 		}
 	}
