@@ -94,14 +94,14 @@ public class DataManager
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load load)
     {
-        if (!load.getWorld().isRemote)
+        if (!load.getWorld().isRemote && load.getWorld().provider.getDimension() == 0)
             load();
     }
 
     @SubscribeEvent
     public void onWorldSave(WorldEvent.Save save)
     {
-        if (!save.getWorld().isRemote)
+        if (!save.getWorld().isRemote && save.getWorld().provider.getDimension() == 0)
             save();
     }
 
