@@ -48,7 +48,12 @@ public class ConfigHandler
             defaultElements = new ArrayList<Element>();
             while (scan.hasNextLine())
             {
-                String s = scan.nextLine();
+                String s = scan.nextLine().trim();
+                if (s.isEmpty()) 
+                {
+                    continue;
+                }
+                
                 String[] args = s.split(endStr);
                 if (args.length != 2)
                 {
