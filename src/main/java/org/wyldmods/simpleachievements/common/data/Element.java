@@ -1,13 +1,11 @@
 package org.wyldmods.simpleachievements.common.data;
 
+import static org.wyldmods.simpleachievements.common.data.Element.Alignment.LEFT;
+
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
-import lombok.ToString;
-
-import static org.wyldmods.simpleachievements.common.data.Element.Alignment.LEFT;
-@ToString
 public class Element implements Serializable
 {
     private static final long serialVersionUID = -6961457157774225518L;
@@ -64,12 +62,17 @@ public class Element implements Serializable
 
 	public void setState(boolean newState)
 	{
+		if(state != newState)
+		{
+			DataManager.INSTANCE.markDirty();
+		}
 		state = newState;
 	}
 
 	public void toggle()
 	{
 		state = !state;
+		DataManager.INSTANCE.markDirty();
 	}
 
 	public boolean isAchievement()
@@ -97,10 +100,15 @@ public class Element implements Serializable
 		return align;
 	}
 
-	@SuppressWarnings("null")
-    public @Nonnull String getText()
+	public @Nonnull String getText()
 	{
 		return text.replace(lineSplit, "\n");
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getText();
 	}
 
 	public void setText(String s)

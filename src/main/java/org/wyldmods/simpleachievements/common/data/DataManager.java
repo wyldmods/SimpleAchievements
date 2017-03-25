@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,7 +19,6 @@ import org.wyldmods.simpleachievements.common.networking.MessageSendAchievements
 import org.wyldmods.simpleachievements.common.networking.PacketHandlerSA;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,7 +36,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
@@ -67,7 +65,7 @@ public class DataManager
         public Map<String, DataHandler> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject root = json.getAsJsonObject();
-            Map<String, DataHandler> ret = Maps.newHashMap();
+            Map<String, DataHandler> ret = new LinkedHashMap<String, DataHandler>();
             for (Entry<String, JsonElement> e : root.entrySet())
             {
                 JsonArray arr = e.getValue().getAsJsonArray();
@@ -89,7 +87,6 @@ public class DataManager
         }
     }
 
-    private static boolean noSave = false;
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load load)
@@ -117,7 +114,9 @@ public class DataManager
                     (EntityPlayerMP) player);
         }
     }
-
+    private static boolean noSave = false;
+    private boolean isDirty = false;
+    
     public static final DataManager INSTANCE = new DataManager();
 
     private Map<String, DataHandler> map;
@@ -128,9 +127,9 @@ public class DataManager
 
     private DataManager()
     {
-        map = new HashMap<String, DataHandler>();
-        formats = new HashMap<Integer, Formatting>();
-        specialUsers = new HashMap<String, Offset>();
+        map = new LinkedHashMap<String, DataHandler>();
+        formats = new LinkedHashMap<Integer, Formatting>();
+        specialUsers = new LinkedHashMap<String, Offset>();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -155,7 +154,7 @@ public class DataManager
         formats = new Gson().fromJson(s, new TypeToken<Map<Integer, Formatting>>(){}.getType());
         if (formats == null)
         {
-            formats = new HashMap<Integer, Formatting>();
+            formats = new LinkedHashMap<Integer, Formatting>();
             formats.put(0, new Formatting());
         }
     }
@@ -168,13 +167,14 @@ public class DataManager
                 new TypeToken<Map<String, Offset>>(){}.getType());
         if (specialUsers == null)
         {
-            specialUsers = new HashMap<String, Offset>();
+            specialUsers = new LinkedHashMap<String, Offset>();
         }
     }
 
     public void load()
     {
         noSave = false;
+        isDirty = false;
 
         saveDir = new File(DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath() + "/" + SimpleAchievements.MODID);
         saveDir.mkdirs();
@@ -183,7 +183,6 @@ public class DataManager
         try
         {
             initSpecialUsers();
-
             if (saveFile.createNewFile())
             {
                 return;
@@ -201,23 +200,27 @@ public class DataManager
 
     public void save()
     {
-        if (!noSave)
+        if (!noSave && isDirty)
         {
             saveMap(saveFile, this, this.map);
+            isDirty = false;
         }
+    }
+    
+    public void markDirty()
+    {
+    	isDirty = true;
     }
 
     public void toggleAchievement(String username, int id)
     {
         checkMap(username);
-
         map.get(username).toggleAchievement(id);
     }
 
     public DataHandler getHandlerFor(String username)
     {
         checkMap(username);
-
         return map.get(username);
     }
 
@@ -242,7 +245,7 @@ public class DataManager
         scan.close();
 
         Map<String, DataHandler> ret = dataReader.fromJson(json, new TypeToken<Map<String, DataHandler>>(){}.getType());
-        return ret == null ? new HashMap<String, DataHandler>() : ret;
+        return ret == null ? new LinkedHashMap<String, DataHandler>() : ret;
     }
 
     @SuppressWarnings("serial")
@@ -287,6 +290,7 @@ public class DataManager
     public void flush()
     {
         noSave = true;
+        isDirty = false;
 
         this.map.clear();
         this.formats.clear();
