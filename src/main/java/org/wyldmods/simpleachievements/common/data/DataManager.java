@@ -221,7 +221,7 @@ public class DataManager
 
     public void save()
     {
-        if (!noSave)
+        if (!noSave && saveFile != null)
         {
             saveMap(saveFile, this, this.map);
         }
